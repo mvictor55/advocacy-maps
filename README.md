@@ -1,6 +1,18 @@
 # Massachusetts Platform for Legislative Engagement (MAPLE)
 
 A legislative testimony project through Code for Boston!
+We have been working with Northeastern's NuLawLab and Code for Boston since Jan '21 to create the platform, which makes it easy for residents to submit their
+testimony to the MA legislature and read the testimony of others.
+ 
+Our goals are to: 1) provide a public archive of legislative testimony; 2) standardize and increase accessibility to the testimony process, so that more people can 
+make their voices heard; and 3) create a digital space for constituents and legislators to maintain prolonged focus on key issues, and to learn more efficiently about 
+the laws that will shape our lives. We hope that people will be able to channel their political energy into more productive improvements for our local and state 
+communities (as compared to political energy spent on twitter/facebook), and that legislators will find it a useful resource for discerning the will and knowledge of 
+their constituents.
+ 
+This is a volunteer-led nonprofit, nonpartisan project and is developed as open source software. We are not seeking to monetize data or services associated with the 
+platform; our intent is to operate it as a public good.
+
 
 ## Essentials
 
