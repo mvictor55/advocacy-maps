@@ -1,0 +1,155 @@
+{
+  "nav": {
+    "label": "Challenge page",
+    "what": "What MAPLE is",
+    "funds": "What your gift funds",
+    "faq": "FAQ",
+    "give": "Give"
+  },
+  "hero": {
+    "eyebrow": "The MAPLE Challenge",
+    "title": "A funder put $125,000 behind MAPLE. Now it's our turn.",
+    "body": "[Funder name, or \"A Massachusetts funder\"] has committed $125,000 to MAPLE and challenged the community to raise $125,000 more by February 15, 2027. Help keep a free, nonpartisan window into the Massachusetts Legislature open to everyone.",
+    "raisedPlaceholder": "[$ raised]",
+    "ofGoal": "of {{goal}}",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "challengeEnded": "The challenge has ended",
+    "progressLabel": "Progress toward the {{goal}} challenge goal",
+    "supportersPlaceholder": "[N] supporters",
+    "supporters_one": "{{count}} supporter",
+    "supporters_other": "{{count}} supporters",
+    "supportersSuffix": " so far. Every one of them counts.",
+    "cta": "Give to the challenge",
+    "otherWays": "Check, wire, pledge or donor-advised fund"
+  },
+  "form": {
+    "title": "Give to MAPLE",
+    "frequency": "How often",
+    "oneTime": "One-time",
+    "monthly": "Monthly",
+    "amount": "Amount",
+    "other": "Other",
+    "give": "Give",
+    "giveAmount": "Give {{amount}}",
+    "giveAmountMonthly": "Give {{amount}} a month",
+    "note": "Gifts go to Partners in Democracy, a 501(c)(3), and are restricted to MAPLE. Tax-deductible to the extent allowed by law."
+  },
+  "what": {
+    "title": "What MAPLE is",
+    "body": "Democracy works best when residents and their representatives can actually hear each other. MAPLE is a free, open-source, nonpartisan platform where anyone can read and submit testimony on bills before the Massachusetts Legislature, and follow what happens next.",
+    "cards": [
+      {
+        "label": "Testimony",
+        "title": "[X] pieces of public testimony",
+        "body": "From [Y] residents and organizations, readable by anyone."
+      },
+      {
+        "label": "April 2026",
+        "title": "Searchable hearing transcripts",
+        "body": "Time-stamped transcripts of State House committee hearings."
+      },
+      {
+        "label": "July 2026",
+        "title": "CalMatters partnership",
+        "body": "With the nonprofit newsroom behind Digital Democracy, on Massachusetts legislative data."
+      },
+      {
+        "label": "October 2026 · Beta",
+        "title": "Lobbying Explorer",
+        "body": "See who is lobbying on a bill, and for whom, from Secretary of State disclosures."
+      }
+    ]
+  },
+  "why": {
+    "title": "Why we're asking",
+    "paragraphs": [
+      "Infrastructure like this is hard to fund. It doesn't take sides, so no side pays for it. It isn't flashy, so it rarely makes headlines. And no single interest owns it, which is exactly the point.",
+      "That's why everyone who values it has to chip in. A broad base of supporters, from across the political spectrum, is also the best proof that MAPLE belongs to the public."
+    ]
+  },
+  "funds": {
+    "title": "What your gift funds",
+    "body": "The Legislature's new two-year session begins in January 2027. Gifts to the challenge pay for MAPLE's work through that session.",
+    "items": [
+      {
+        "title": "Keeping MAPLE free and running",
+        "body": "Hosting, maintenance and support for everyone who uses it."
+      },
+      {
+        "title": "Clearer legislative information",
+        "body": "Planned legislator and committee profiles, and a bill page that brings testimony, lobbying, votes and campaign finance together."
+      },
+      {
+        "title": "Tools for civic organizations",
+        "body": "Planned features that help groups engage members in testimony and follow the bills and legislators they care about."
+      },
+      {
+        "title": "Coalition building",
+        "body": "Working groups with civic organizations, journalists and legislative staff that shape what MAPLE builds next."
+      }
+    ]
+  },
+  "levels": {
+    "title": "Ways to give",
+    "items": [
+      {
+        "amount": "$100",
+        "body": "A gift from someone who has testified, or wants to.",
+        "cta": "Give $100"
+      },
+      {
+        "amount": "$250",
+        "body": "A strong vote of confidence in public legislative infrastructure.",
+        "cta": "Give $250"
+      },
+      {
+        "amount": "$1,000",
+        "body": "A leadership gift. Can be pledged over time.",
+        "cta": "Give $1,000"
+      }
+    ],
+    "sustainer": {
+      "amount": "$500",
+      "per": "/month",
+      "body": "For individuals and foundations who want to help carry MAPLE's core costs year-round.",
+      "cta": "Become a sustainer"
+    },
+    "otherTitle": "Check, wire, pledge or donor-advised fund",
+    "otherBody": "Every gift counts toward the challenge. Contact Matt Victor at [email] for instructions."
+  },
+  "faq": {
+    "title": "Questions",
+    "items": [
+      {
+        "q": "Has the funder already given the $125,000?",
+        "a": "Yes. Their grant is already committed to MAPLE, whether or not we reach the goal. They challenged the community to raise $125,000 more. Your gift doesn't unlock their money; it shows that the people who use and value MAPLE will help sustain it."
+      },
+      {
+        "q": "What happens if we don't reach $125,000?",
+        "a": "Every gift still goes to MAPLE's work this session. Reaching the goal is the strongest signal we can send to other funders that this infrastructure has public support."
+      },
+      {
+        "q": "Where does my gift go?",
+        "a": "To Partners in Democracy, a 501(c)(3) nonprofit, restricted to MAPLE. Gifts are tax-deductible to the extent allowed by law, and gifts of $250 or more receive a written acknowledgment."
+      },
+      {
+        "q": "How does MAPLE stay nonpartisan?",
+        "a": "MAPLE does not take positions on legislation, and anyone can testify for or against any bill. [Link to MAPLE's governance statement once published.]"
+      },
+      {
+        "q": "Who funds MAPLE?",
+        "a": "[List MAPLE's major funders, or link to a funders page.]"
+      },
+      {
+        "q": "Can I give by check, wire, pledge or donor-advised fund?",
+        "a": "Yes, and those gifts count toward the challenge. Contact Matt Victor at [email] for instructions."
+      }
+    ]
+  },
+  "closing": {
+    "name": "MAPLE",
+    "tagline": "A digital commons worthy of our Commonwealth.",
+    "body": "MAPLE is a project of Partners in Democracy, a 501(c)(3) nonprofit. Open source and nonpartisan."
+  }
+}

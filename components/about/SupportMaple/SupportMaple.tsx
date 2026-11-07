@@ -9,7 +9,7 @@ import LearnBreadcrumb from "../../learn/LearnBreadcrumb"
 import LearnHeader from "../../learn/LearnHeader"
 import LearnLayout from "../../learn/LearnLayout"
 
-const DONATE_URL = "https://partnersindemocracy.us/?form=FUNMSSLLQEC"
+export const DONATE_URL = "https://partnersindemocracy.us/?form=FUNMSSLLQEC"
 const GITHUB_URL = "https://github.com/codeforboston/maple/graphs/contributors"
 const BUG_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSebZTHz0XGR4WgPf10yTPXSOuZK2P41HxK0AFGXM57KbFWuDg/viewform?usp=share_link"
