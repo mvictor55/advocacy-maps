@@ -13,6 +13,7 @@ import {
   isCurrentCourt
 } from "functions/src/shared"
 import { useTranslation } from "next-i18next"
+import Head from "next/head"
 import { useMemo } from "react"
 import styled from "styled-components"
 import { BillHeader } from "./BillHeader"
@@ -30,6 +31,9 @@ import { StatTiles } from "./StatTiles"
 import { TestimonyTab } from "./TestimonyTab"
 import { TextTab } from "./TextTab"
 import { TabKey, useBillUrlState } from "./useBillUrlState"
+import { useStandsSummary } from "./WhereItStands"
+import { formatBillId } from "components/formatting"
+import { courtOrdinal } from "components/lobbying/sessions"
 
 const Page = styled(Container)`
   padding-top: var(--maple-space-lg);
@@ -59,6 +63,14 @@ const Layout = styled.div`
     align-items: start;
   }
 `
+
+/** Cuts a long title at a word, for the browser tab and description. */
+function truncate(text: string, max: number): string {
+  const clean = text.replace(/\s+/g, " ").trim()
+  if (clean.length <= max) return clean
+  const cut = clean.slice(0, max).replace(/\s+\S*$/, "")
+  return `${cut}…`
+}
 
 /**
  * The bill detail page behind the `billPageV2` flag: header, stat tiles,
@@ -90,9 +102,24 @@ function BillPageBody({
   bill: Bill
   conference?: ConferenceSummary | null
 }) {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation(["common", "billPage"])
   const flags = useFlags()
   const isPendingUpgrade = useAuth().claims?.role === "pendingUpgrade"
+  const summary = useStandsSummary(bill)
+  // The shared layout sets a generic title first; this one, rendered later,
+  // replaces it in the browser. Link-preview tags would need the layout to
+  // render on the server, so they are not set here.
+  const pageTitle = t("billPage:head.title", {
+    bill: formatBillId(bill.id),
+    title: truncate(bill.content.Title, 80),
+    maple: t("common:maple_abbr")
+  })
+  const description = t("billPage:head.description", {
+    bill: formatBillId(bill.id),
+    court: courtOrdinal(bill.court),
+    status: summary.text,
+    title: truncate(bill.content.Title, 160)
+  })
   const isBallotMeasure =
     bill.currentCommittee?.id === currentBallotInitiativeCommittee
   const draft = useMemo(() => draftOrigin(bill.history), [bill.history])
@@ -137,6 +164,10 @@ function BillPageBody({
 
   return (
     <>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={description} />
+      </Head>
       {isPendingUpgrade && <PendingUpgradeBanner />}
       {!isCurrentCourt(bill.court) && (
         <Banner>{t("bill.old_session", { billCourt: bill.court })}</Banner>

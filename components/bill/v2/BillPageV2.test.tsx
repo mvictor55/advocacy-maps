@@ -35,6 +35,12 @@ jest.mock("components/db/common", () => ({
   loadDoc: async () => undefined
 }))
 
+// next/head renders nothing under jsdom; render its children in place.
+jest.mock("next/head", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}))
+
 const mockTestimony: Testimony[] = []
 jest.mock("./useBillHearings", () => {
   const actual = jest.requireActual("./useBillHearings")
@@ -568,6 +574,17 @@ describe("BillPageV2", () => {
     renderPage(reported, "history")
     expect(screen.getByText("votes.reportedNoVote")).toBeInTheDocument()
     expect(screen.getByText("votes.noRollCalls")).toBeInTheDocument()
+  })
+
+  it("titles the page after the bill", () => {
+    renderPage(heard)
+    expect(document.querySelector("title")).toHaveTextContent(
+      "billPage:head.title"
+    )
+    expect(document.querySelector('meta[name="description"]')).toHaveAttribute(
+      "content",
+      "billPage:head.description"
+    )
   })
 
   it("opens the tab named in the URL", () => {
