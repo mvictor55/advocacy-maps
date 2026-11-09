@@ -1,12 +1,15 @@
+import { BillHistory } from "components/db"
 import { courtCalendar, isoDate } from "./courtCalendar"
+import { reportDeadline } from "./reportDeadline"
 import { DocumentKind } from "./v2/documentKind"
 import { WhereItStands } from "./whereItStands"
 
 /**
  * What to say about a step that hasn't happened. Only said when the record
- * supports it: a referred bill or resolve in a session where the step can
- * still happen gets "yet"; once the deadline has passed, or for an earlier
- * session, the sentence only reports what is recorded.
+ * supports it: a referred bill or resolve gets "yet" while the step can
+ * still happen; once the bill's reporting deadline has passed, formal
+ * sessions have ended, or the session is over, the sentence only reports
+ * what is recorded.
  */
 export type AbsenceSentences = {
   /** Under "In committee", when no hearing is on record. */
@@ -21,14 +24,23 @@ export function absenceSentences({
   court,
   kind,
   stands,
+  history,
   hasHearing,
+  hearingDate,
+  filedByHouseMember = false,
   now
 }: {
   court: number
   kind: DocumentKind
   stands: WhereItStands
+  /** The bill's history, for any reporting extension it records. */
+  history: BillHistory
   /** A hearing is on record (a hearing document or a notice in the history). */
   hasHearing: boolean
+  /** The hearing's date as "YYYY-MM-DD", when known. */
+  hearingDate?: string
+  /** Filed by a House member: House Rule 27 sets its reporting deadline. */
+  filedByHouseMember?: boolean
   now: Date
 }): AbsenceSentences {
   // Only a bill or resolve referred to a joint committee is expected to be
@@ -40,7 +52,8 @@ export function absenceSentences({
   const calendar = courtCalendar(court)
   const today = isoDate(now)
   const sessionOver = today > calendar.dissolution
-  const reportingOver = today > calendar.jr10Default
+  const reportingOver =
+    today > reportDeadline({ court, history, hearingDate, filedByHouseMember })
   const formalOver = today > calendar.formalEndYear2
 
   const reached = new Set(

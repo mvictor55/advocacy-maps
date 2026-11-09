@@ -234,6 +234,12 @@ function StatusLabel({ status, court }: { status: Status; court: number }) {
   }
 }
 
+/** A House bill filed by a legislator (not a committee or a petition):
+ * House Rule 27 sets its reporting deadline from the 194th on. */
+export function filedByHouseMember(bill: Bill): boolean {
+  return bill.id.startsWith("H") && bill.content?.PrimarySponsor?.Type === 1
+}
+
 const DEAD: ReadonlySet<Status["key"]> = new Set([
   "supersededBy",
   "deadAtDissolution",
@@ -265,6 +271,7 @@ export function WhereItStandsPanel({
   bill,
   hasHearing,
   hearingDate,
+  hearingIso,
   now = new Date()
 }: {
   bill: Bill
@@ -272,6 +279,8 @@ export function WhereItStandsPanel({
   hasHearing: boolean
   /** The hearing's date, formatted, when known. */
   hearingDate?: string
+  /** The hearing's date as "YYYY-MM-DD", for the reporting deadline. */
+  hearingIso?: string
   /** For tests: today's date. */
   now?: Date
 }) {
@@ -287,7 +296,10 @@ export function WhereItStandsPanel({
     court: bill.court,
     kind,
     stands,
+    history: bill.history,
     hasHearing,
+    hearingDate: hearingIso,
+    filedByHouseMember: filedByHouseMember(bill),
     now
   })
   const dead = stands.status ? DEAD.has(stands.status.key) : false

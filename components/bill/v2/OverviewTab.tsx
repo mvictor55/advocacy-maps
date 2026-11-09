@@ -14,7 +14,7 @@ import { StanceBar } from "./StanceBar"
 import { applyTestimonyFilters, groupLetters } from "./testimonyFilters"
 import { useAllBillTestimony } from "./useAllBillTestimony"
 import { useBillUrlState } from "./useBillUrlState"
-import { formatHearingDate, formatHistoryDate } from "./dates"
+import { formatHearingDate, formatHistoryDate, hearingIsoDate } from "./dates"
 import { BillHearing, heardWith } from "./useBillHearings"
 import { WhereItStandsPanel } from "./WhereItStands"
 import { hearingDatesFromHistory } from "./hearingHistory"
@@ -70,6 +70,12 @@ export function OverviewTab({
     [testimony, user?.uid]
   )
 
+  // The hearing's calendar date: from the hearing document, else from the
+  // latest notice in the history.
+  const hearingIso =
+    hearingIsoDate(hearings?.find(h => h.date)?.date) ??
+    hearingDatesFromHistory(bill.history).slice(-1)[0]
+
   return (
     <>
       <PanelSection title={t("billPage:stance.title")}>
@@ -112,15 +118,8 @@ export function OverviewTab({
         hasHearing={
           hasHearings || hearingDatesFromHistory(bill.history).length > 0
         }
-        hearingDate={
-          hearings?.find(h => h.date)
-            ? formatHearingDate(hearings.find(h => h.date)!.date)
-            : hearingDatesFromHistory(bill.history).length > 0
-            ? formatHistoryDate(
-                hearingDatesFromHistory(bill.history).slice(-1)[0]
-              )
-            : undefined
-        }
+        hearingDate={hearingIso ? formatHistoryDate(hearingIso) : undefined}
+        hearingIso={hearingIso}
       />
 
       {letters.length > 0 && (
