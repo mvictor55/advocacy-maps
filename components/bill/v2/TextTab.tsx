@@ -47,7 +47,7 @@ const TopicChip = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  border-radius: var(--maple-radius-xl);
+  border-radius: var(--maple-radius-pill);
   background: var(--bs-secondary);
   color: var(--maple-text-inverse);
   font-size: 12px;
