@@ -2,6 +2,7 @@ import { BillHistory } from "components/db"
 import { oneLineActionText, plainActionText } from "./actionText"
 import { formatHistoryDate } from "./dates"
 import { documentKind, isChamberCommittee } from "./documentKind"
+import { lobbyingCoverage } from "./lobbyingCoverage"
 import { draftOrigin } from "./newDraft"
 import { countRollCallMentions } from "./rollCallMentions"
 import { hrefFor, parseTab, queryForTab, routeParams } from "./useBillUrlState"
@@ -120,20 +121,78 @@ describe("documentKind", () => {
         bill("Bill", [h("Referred to the committee on Public Health", "House")])
       )
     ).toBe("referredBill")
-    expect(documentKind(bill("Resolve", []))).toBe("referredBill")
+    // A late-filed bill (S2508, 194th): Rules of the two branches, then a
+    // joint committee.
     expect(
       documentKind(
         bill("Bill", [
-          h("Reported from the committee on House Ways and Means"),
-          h("New draft of H4600")
+          h(
+            "Referred to the committee on Rules of the two branches, acting concurrently",
+            "Senate"
+          ),
+          h("Rules suspended", "Senate"),
+          h("Referred to the committee on The Judiciary", "Senate"),
+          h("House concurred", "House")
+        ])
+      )
+    ).toBe("referredBill")
+    // Discharged from Rules to a joint committee (H3891, 194th).
+    expect(
+      documentKind(
+        bill("Bill", [
+          h(
+            "Referred to the committee on Rules of the two branches, acting concurrently"
+          ),
+          h("Senate concurred", "Senate"),
+          h(
+            "Discharged to the committee on State Administration and Regulatory Oversight"
+          )
+        ])
+      )
+    ).toBe("referredBill")
+    // An initiative petition (H5000, 194th).
+    expect(
+      documentKind(
+        bill("Bill", [
+          h("Referred to the Special Joint Committee on Initiative Petitions")
+        ])
+      )
+    ).toBe("referredBill")
+    // The Governor's budget (H1, 194th) goes straight to House Ways and Means.
+    expect(
+      documentKind(
+        bill("Bill", [
+          h("Read; and referred to the committee on House Ways and Means"),
+          h("Reported, in part, by H4000")
+        ])
+      )
+    ).toBe("unreferredBill")
+    // Still in House Rules.
+    expect(
+      documentKind(
+        bill("Bill", [h("Referred to the committee on House Rules")])
+      )
+    ).toBe("unreferredBill")
+    expect(documentKind(bill("Resolve", []))).toBe("unreferredBill")
+    // Committee-created documents.
+    expect(
+      documentKind(
+        bill("Bill", [
+          h(
+            "Reported from the committee on Advanced Information Technology, the Internet and Cybersecurity"
+          ),
+          h("New draft of H78, H80, H86, H96, H103 and H104")
         ])
       )
     ).toBe("committeeDocument")
     expect(
       documentKind(
-        bill("Bill", [h("Referred to the committee on House Ways and Means")])
+        bill("Bill", [h("Reported from the committee on House Ways and Means")])
       )
     ).toBe("committeeDocument")
+    expect(documentKind(bill("Bill", [h("Substituted for H4291")]))).toBe(
+      "committeeDocument"
+    )
     expect(documentKind(bill("Order", [h("Adopted")]))).toBe("order")
     expect(documentKind(bill("Extension Order", []))).toBe("order")
     expect(documentKind(bill("Amendment", []))).toBe("other")
@@ -179,5 +238,48 @@ describe("tab URL state", () => {
     }
     expect(queryForTab(query, "history")).toEqual({ ...query, tab: "history" })
     expect(queryForTab({ ...query, tab: "history" }, "overview")).toEqual(query)
+  })
+})
+
+describe("lobbyingCoverage", () => {
+  // Lobbied bills per session in the dev stats document.
+  const stats = {
+    courtsWithData: [184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194],
+    filingsByYear: { "2024": 48715, "2025": 56160, "2026": 27039 },
+    courts: Object.fromEntries(
+      Object.entries({
+        184: 38,
+        185: 72,
+        186: 537,
+        187: 1066,
+        188: 4120,
+        189: 4380,
+        190: 4735,
+        191: 5060,
+        192: 5421,
+        193: 5189,
+        194: 5660
+      }).map(([court, bills]) => [
+        court,
+        { bills, clients: 0, lobbyists: 0, firms: 0, paid: 0 }
+      ])
+    )
+  }
+
+  it("tells full, partial and missing sessions apart", () => {
+    expect(lobbyingCoverage(stats, 194)).toEqual({
+      status: "full",
+      latestYear: 2026
+    })
+    expect(lobbyingCoverage(stats, 188).status).toBe("full")
+    expect(lobbyingCoverage(stats, 187).status).toBe("partial")
+    expect(lobbyingCoverage(stats, 184).status).toBe("partial")
+    expect(lobbyingCoverage(stats, 183).status).toBe("none")
+    expect(lobbyingCoverage(undefined, 194)).toEqual({ status: "none" })
+  })
+
+  it("treats every listed session as full when the stats have no per-session counts", () => {
+    const { courts: _courts, ...older } = stats
+    expect(lobbyingCoverage(older, 184).status).toBe("full")
   })
 })

@@ -88,11 +88,13 @@
     "orgs_one": "{{count}} organization reported lobbying on this bill.",
     "orgs_other": "{{count}} organizations reported lobbying on this bill.",
     "positionNote": "Positions are shown as reported in each lobbying disclosure. Lobbyists are listed under the organization they filed for.",
-    "none": "No lobbying disclosure filed with the Secretary of State names this bill.",
+    "none": "No lobbying disclosure in MAPLE's data names this bill.",
     "explorer": "Open in the Lobbying Explorer",
     "loading": "Loading lobbying disclosures…",
     "notCovered": "MAPLE's lobbying data doesn't cover the {{courtOrdinal}} General Court.",
-    "loadError": "The lobbying disclosures couldn't be loaded. Try again later, or open the Lobbying Explorer."
+    "loadError": "The lobbying disclosures couldn't be loaded. Try again later, or open the Lobbying Explorer.",
+    "noneThrough": "No lobbying disclosure in MAPLE's data names this bill (data through {{year}}).",
+    "partial": "MAPLE's lobbying data for the {{courtOrdinal}} General Court is incomplete, and no disclosure in it names this bill."
   },
   "text": {
     "summaryTitle": "Summary",

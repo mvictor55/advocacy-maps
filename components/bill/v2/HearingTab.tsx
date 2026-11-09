@@ -46,6 +46,7 @@ function NoHearing({ bill }: { bill: Bill }) {
   const { t } = useTranslation("billPage")
   switch (documentKind(bill)) {
     case "referredBill":
+    case "unreferredBill":
       return <Muted>{t("hearing.noneRecorded")}</Muted>
     case "committeeDocument":
       return <Muted>{t("hearing.committeeDocument")}</Muted>

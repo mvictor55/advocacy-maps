@@ -11,6 +11,7 @@ import {
 } from "components/lobbying/activity"
 import { createContext, ReactNode, useContext, useMemo } from "react"
 import { useAsync } from "react-async-hook"
+import { LobbyingCoverage, lobbyingCoverage } from "./lobbyingCoverage"
 
 /**
  * Lobbying on one bill, grouped by client organization exactly as the
@@ -19,8 +20,8 @@ import { useAsync } from "react-async-hook"
  * - `off`: the lobbying feature flag is off; nothing was read.
  * - `loading`, `error`: as the Explorer's hooks report them.
  * - `ready`: `activity` has one row per organization; `organizations` counts
- *   the real ones ("No client" placeholders are left out). `covered` says
- *   whether MAPLE's lobbying data includes this bill's session at all.
+ *   the real ones ("No client" placeholders are left out). `coverage` says
+ *   how well MAPLE's lobbying data covers this bill's session.
  */
 export type BillLobbying =
   | { status: "off" }
@@ -30,7 +31,7 @@ export type BillLobbying =
       status: "ready"
       activity: Activity
       organizations: number
-      covered: boolean
+      coverage: LobbyingCoverage
     }
 
 const BillLobbyingContext = createContext<BillLobbying>({ status: "off" })
@@ -77,7 +78,7 @@ function Loaded({
       status: "ready",
       activity,
       organizations: organizationRows(activity.rows).length,
-      covered: (stats.result?.courtsWithData ?? []).includes(court)
+      coverage: lobbyingCoverage(stats.result, court)
     }
   }, [court, filings, registrants, inHouse, stats.loading, stats.result])
 

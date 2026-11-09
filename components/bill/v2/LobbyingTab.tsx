@@ -5,6 +5,7 @@ import { ActivityTable } from "components/lobbying/ActivityTable"
 import { LobbyingAttribution } from "components/lobbying/LobbyingAttribution"
 import { PositionBar } from "components/lobbying/PositionBar"
 import { courtOrdinal } from "components/lobbying/sessions"
+import { isCurrentCourt } from "functions/src/shared"
 import { useTranslation } from "next-i18next"
 import { useBillLobbying } from "./billLobbying"
 import { Muted, PanelSection } from "./SourceNote"
@@ -30,15 +31,20 @@ export function LobbyingTab({ bill }: { bill: Bill }) {
       body = <Muted>{t("billPage:lobbying.loadError")}</Muted>
       break
     case "ready": {
-      const { activity, organizations, covered } = lobbying
+      const { activity, organizations, coverage } = lobbying
       if (organizations === 0) {
+        const ordinal = { courtOrdinal: courtOrdinal(bill.court) }
         body = (
           <Muted>
-            {covered
-              ? t("billPage:lobbying.none")
-              : t("billPage:lobbying.notCovered", {
-                  courtOrdinal: courtOrdinal(bill.court)
-                })}
+            {coverage.status === "none"
+              ? t("billPage:lobbying.notCovered", ordinal)
+              : coverage.status === "partial"
+              ? t("billPage:lobbying.partial", ordinal)
+              : isCurrentCourt(bill.court) && coverage.latestYear
+              ? t("billPage:lobbying.noneThrough", {
+                  year: coverage.latestYear
+                })
+              : t("billPage:lobbying.none")}
           </Muted>
         )
       } else {
