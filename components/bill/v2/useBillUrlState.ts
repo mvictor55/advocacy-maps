@@ -15,6 +15,8 @@ export type TabKey = (typeof TAB_KEYS)[number]
 /** Query parameters that only mean something on the Testimony tab. A link
  * carrying one of them without `tab` opens that tab. */
 export const TESTIMONY_PARAMS = ["position", "role", "sort"] as const
+/** `?rc=house-270` opens History & votes with that roll call expanded. */
+export const ROLL_CALL_PARAM = "rc"
 
 type Query = Record<string, string | string[] | undefined>
 
@@ -35,6 +37,7 @@ export function tabForQuery(query: Query): TabKey {
   if (query.tab !== undefined) return parseTab(query.tab)
   if (TESTIMONY_PARAMS.some(k => first(query[k]) !== undefined))
     return "testimony"
+  if (first(query[ROLL_CALL_PARAM]) !== undefined) return "history"
   return "overview"
 }
 
@@ -46,6 +49,7 @@ export function tabForQuery(query: Query): TabKey {
 export function queryForTab(query: Query, tab: TabKey): Query {
   const { tab: _tab, ...rest } = query
   if (tab !== "testimony") for (const k of TESTIMONY_PARAMS) delete rest[k]
+  if (tab !== "history") delete rest[ROLL_CALL_PARAM]
   return tab === "overview" ? rest : { ...rest, tab }
 }
 
@@ -97,6 +101,7 @@ export function useBillUrlState() {
     () => parseTestimonyFilters(router.query),
     [router.query]
   )
+  const rollCallId = first(router.query[ROLL_CALL_PARAM])
 
   const hrefForTab = useCallback(
     (next: TabKey) =>
@@ -134,7 +139,7 @@ export function useBillUrlState() {
   )
 
   return useMemo(
-    () => ({ tab, filters, hrefForTab, setTab, setParams }),
-    [tab, filters, hrefForTab, setTab, setParams]
+    () => ({ tab, filters, rollCallId, hrefForTab, setTab, setParams }),
+    [tab, filters, rollCallId, hrefForTab, setTab, setParams]
   )
 }

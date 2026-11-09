@@ -4,7 +4,6 @@ import { formatHistoryDate } from "./dates"
 import { documentKind, isChamberCommittee } from "./documentKind"
 import { lobbyingCoverage } from "./lobbyingCoverage"
 import { draftOrigin } from "./newDraft"
-import { countRollCallMentions } from "./rollCallMentions"
 import { hrefFor, parseTab, queryForTab, routeParams } from "./useBillUrlState"
 
 // History strings below are copied from the dev database.
@@ -84,21 +83,6 @@ describe("draftOrigin", () => {
         h("Accompanied a new draft, see H4746")
       ])
     ).toBeUndefined()
-  })
-})
-
-describe("countRollCallMentions", () => {
-  it("counts House and Senate roll calls but not quorum calls", () => {
-    expect(
-      countRollCallMentions([
-        h("Enacted - 151 YEAS to 0 NAYS (See YEA and NAY No. 270)"),
-        h("Enacted -see Roll Call #207 (Yeas 39 to Nays 0)", "Senate"),
-        h("Quorum Roll Call - 149 YEAS to 0 NAYS (See YEA and NAY No. 249)"),
-        h("Quorum doubted"),
-        h("Amendment #24 (Tarr) rejected (standing vote 5-10)", "Senate"),
-        h("Passed to be engrossed")
-      ])
-    ).toBe(2)
   })
 })
 

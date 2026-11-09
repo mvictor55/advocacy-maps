@@ -1,4 +1,5 @@
 import { BillHistory } from "components/db"
+import { isRollCall, parseRollCallLine, RollCall } from "./rollCalls"
 import { oneLineActionText } from "./v2/actionText"
 import { isChamberCommittee } from "./v2/documentKind"
 
@@ -37,6 +38,8 @@ export type Milestone = {
   passedBranch?: Branch
   /** Index of the line in the bill's history. */
   historyIndex?: number
+  /** The roll call the Legislature cites on this line, if any. */
+  rollCall?: RollCall
 }
 
 export type StatusKey =
@@ -144,16 +147,18 @@ export function whereItStands(
 
   const reached = new Map<MilestoneKey, Milestone>()
   const set = (key: MilestoneKey, l: (typeof lines)[number], extra = {}) => {
-    if (!reached.has(key))
-      reached.set(key, {
-        key,
-        reached: true,
-        date: l.date,
-        action: l.text,
-        branch: l.branch,
-        historyIndex: l.index,
-        ...extra
-      })
+    if (reached.has(key)) return
+    const cited = parseRollCallLine(l.text, l.index, l.date, l.branch)
+    reached.set(key, {
+      key,
+      reached: true,
+      date: l.date,
+      action: l.text,
+      branch: l.branch,
+      historyIndex: l.index,
+      rollCall: cited && isRollCall(cited) && !cited.quorum ? cited : undefined,
+      ...extra
+    })
   }
   reached.set("filed", { key: "filed", reached: true })
 

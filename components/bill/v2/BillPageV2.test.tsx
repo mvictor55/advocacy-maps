@@ -29,6 +29,12 @@ jest.mock("components/featureFlags", () => ({
   })
 }))
 
+// Committee names come from the committee documents; none in tests.
+jest.mock("components/db/common", () => ({
+  ...jest.requireActual("components/db/common"),
+  loadDoc: async () => undefined
+}))
+
 const mockTestimony: Testimony[] = []
 jest.mock("./useBillHearings", () => {
   const actual = jest.requireActual("./useBillHearings")
@@ -448,6 +454,119 @@ describe("BillPageV2", () => {
       "Drew"
     ])
     expect(screen.getAllByText("billPage:overview.seeAll:4")).toHaveLength(1)
+  })
+
+  it("lists the roll calls the history cites and opens the one in the URL", () => {
+    const enacted: Bill = {
+      ...heard,
+      id: "H4240",
+      content: {
+        ...heard.content,
+        BillNumber: "H4240",
+        CommitteeRecommendations: [
+          {
+            Action: "Favorable",
+            Committee: { CommitteeCode: "H34", GeneralCourtNumber: 194 },
+            Votes: [
+              {
+                Question: "Committee Poll",
+                Date: "2025-06-01T10:00:00",
+                Vote: [
+                  {
+                    Favorable: [
+                      { GeneralCourtNumber: 194, MemberCode: "AAA1" }
+                    ],
+                    ReserveRight: [
+                      { GeneralCourtNumber: 194, MemberCode: "BBB1" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      } as Bill["content"],
+      hearingIds: undefined,
+      history: [
+        {
+          Date: "2025-06-30T00:00:00",
+          Branch: "House",
+          Action: "Enacted - 139 YEAS to 6 NAYS (See YEA and NAY No. 62)"
+        },
+        {
+          Date: "2025-06-30T00:00:00",
+          Branch: "Senate",
+          Action: "Enacted and laid before the Governor"
+        },
+        {
+          Date: "2025-10-23T00:00:00",
+          Branch: "Senate",
+          Action:
+            "Item 0330-0300 passed over veto -see Roll Call #75 (Yeas 35 to Nays 3)"
+        },
+        {
+          Date: "2025-10-08T00:00:00",
+          Branch: "House",
+          Action:
+            "Quorum Roll Call - 149 YEAS to 0 NAYS (See YEA and NAY No. 249)"
+        }
+      ]
+    }
+    routerState.asPath = "/bills/194/H4240?rc=senate-75"
+    routerState.query = { court: "194", billId: "H4240", rc: "senate-75" }
+    const store = mockStore({
+      auth: { authenticated: false, user: null, claims: null },
+      publish: { service: {}, showThankYou: false, bill: enacted }
+    })
+    render(
+      <Provider store={store}>
+        <BillPageV2 bill={enacted} />
+      </Provider>
+    )
+    // A roll-call link opens History & votes.
+    expect(screen.getByRole("link", { name: /tabs.history/ })).toHaveAttribute(
+      "aria-current",
+      "page"
+    )
+    // Two votes counted; the quorum call is listed but not counted.
+    expect(screen.getByText("tiles.rollCalls:2")).toBeInTheDocument()
+    expect(screen.getByText("votes.quorumCall")).toBeInTheDocument()
+    const open = document.querySelector("details[open]")!
+    expect(open).toHaveAttribute("id", "rc-senate-75")
+    expect(open).toHaveTextContent("Item 0330-0300 passed over veto")
+    expect(
+      within(open as HTMLElement).getByRole("link", { name: /votes.pdf/ })
+    ).toHaveAttribute(
+      "href",
+      "https://malegislature.gov/RollCall/194/SenateRollCall75.pdf"
+    )
+    // The committee's report, with members by their vote on the report.
+    expect(screen.getByText(/votes.actions.favorable/)).toBeInTheDocument()
+    expect(screen.getByText("votes.forReport:1")).toBeInTheDocument()
+    expect(screen.getByText(/votes.reserved:1/)).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "AAA1" })).toHaveAttribute(
+      "href",
+      "https://malegislature.gov/Legislators/Profile/AAA1"
+    )
+  })
+
+  it("says when a committee reported without a recorded vote", () => {
+    const reported: Bill = {
+      ...heard,
+      content: {
+        ...heard.content,
+        CommitteeRecommendations: [
+          {
+            Action: "Accompanied",
+            Committee: { CommitteeCode: "J29", GeneralCourtNumber: 194 },
+            Votes: []
+          }
+        ]
+      } as Bill["content"]
+    }
+    renderPage(reported, "history")
+    expect(screen.getByText("votes.reportedNoVote")).toBeInTheDocument()
+    expect(screen.getByText("votes.noRollCalls")).toBeInTheDocument()
   })
 
   it("opens the tab named in the URL", () => {

@@ -25,7 +25,7 @@ import { HistoryTab } from "./HistoryTab"
 import { LobbyingTab } from "./LobbyingTab"
 import { draftOrigin } from "./newDraft"
 import { OverviewTab } from "./OverviewTab"
-import { countRollCallMentions } from "./rollCallMentions"
+import { voteRollCalls } from "components/bill/rollCalls"
 import { StatTiles } from "./StatTiles"
 import { TestimonyTab } from "./TestimonyTab"
 import { TextTab } from "./TextTab"
@@ -97,7 +97,7 @@ function BillPageBody({
     bill.currentCommittee?.id === currentBallotInitiativeCommittee
   const draft = useMemo(() => draftOrigin(bill.history), [bill.history])
   const rollCalls = useMemo(
-    () => countRollCallMentions(bill.history),
+    () => voteRollCalls(bill.history).length,
     [bill.history]
   )
   const lobbying = useBillLobbying()

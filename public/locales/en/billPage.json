@@ -220,7 +220,8 @@
     },
     "orderSource": "An order is adopted by one branch and does not go to the Governor. Read from the Legislature's record.",
     "otherDocument": "Recorded as “{{type}}”",
-    "remaining": "Not yet: {{steps}}"
+    "remaining": "Not yet: {{steps}}",
+    "tally": "{{yeas}}–{{nays}}, roll call {{number}}"
   },
   "terms": {
     "learnMore": "About the legislative process",
@@ -276,5 +277,57 @@
       "term": "enacted",
       "definition": "The final vote by which each branch approves the exact text of a bill before it goes to the Governor. In Massachusetts, “enacted” is a legislative step; a bill becomes law only when the Governor signs it or lets it take effect."
     }
+  },
+  "votes": {
+    "committeeTitle": "Committee reports",
+    "committeeIntro": "A committee's report is its recommendation on the bill. Members' votes are votes on that recommendation, not on the bill: a favorable vote on a study order sends the bill to study.",
+    "notReportedYet": "The committee hasn't reported yet.",
+    "notReportedRecorded": "No committee report is recorded.",
+    "reportedNoVote": "Reported out of committee without a recorded vote.",
+    "report": "{{committee}}: {{action}}",
+    "recordedAs": "Recorded by the Legislature as “{{action}}”",
+    "question": "Question: {{question}}",
+    "forReport_one": "Voted for the committee's report ({{count}})",
+    "forReport_other": "Voted for the committee's report ({{count}})",
+    "againstReport_one": "Voted against the committee's report ({{count}})",
+    "againstReport_other": "Voted against the committee's report ({{count}})",
+    "reserved_one": "Reserved their rights ({{count}})",
+    "reserved_other": "Reserved their rights ({{count}})",
+    "noVote_one": "No vote recorded ({{count}})",
+    "noVote_other": "No vote recorded ({{count}})",
+    "committeeSource": "Source: the Legislature's record of committee recommendations on this bill.",
+    "actions": {
+      "favorable": "Recommended the bill ought to pass",
+      "favorableWithAmendment": "Recommended the bill ought to pass, with an amendment",
+      "favorableWithChanges": "Recommended the bill ought to pass, with changes",
+      "redraft": "Recommended a new draft",
+      "accompanied": "Reported the bill as accompanying another document",
+      "study": "Recommended a study order",
+      "studyTimeExpired": "Recommended a study order after the reporting deadline passed",
+      "adverse": "Recommended the bill ought not to pass",
+      "placeInOrdersOfTheDay": "Recommended placing it in the Orders of the Day",
+      "correctlyDrawn": "Found it correctly drawn",
+      "discharge": "Recommended discharging it to another committee",
+      "suspendRules": "Recommended suspending the rules",
+      "oughtToBeAdopted": "Recommended it be adopted",
+      "oughtNotToBeApproved": "Recommended against approval",
+      "inPart": "Reported on part of the document",
+      "placeOnFile": "Recommended placing it on file",
+      "compromisedVersion": "Recommended a compromise version"
+    },
+    "rollCallsTitle": "Roll calls",
+    "rollCallsIntro_one": "The bill history cites {{count}} roll call. The tally is as the Legislature recorded it; whether a vote carried can depend on the rule in force (some need two-thirds).",
+    "rollCallsIntro_other": "The bill history cites {{count}} roll calls. Tallies are as the Legislature recorded them; whether a vote carried can depend on the rule in force (some need two-thirds).",
+    "noRollCalls": "No roll call is cited in the bill history. Most votes are voice votes, which have no recorded count.",
+    "tally": "Yeas {{yeas}} – Nays {{nays}}",
+    "quorumCall": "Quorum call (attendance)",
+    "quorumNote": "A quorum roll call records who was present, not a vote on the bill.",
+    "pdf": "Official roll call (PDF)",
+    "noPdf": "The Legislature's PDF for this series isn't linked.",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "linkTo": "Link to roll call {{number}}",
+    "unreadable": "The bill history also cites a roll call this page couldn't read:",
+    "rollCallSource": "Source: the bill history on malegislature.gov; each tally links to the Legislature's official roll call."
   }
 }

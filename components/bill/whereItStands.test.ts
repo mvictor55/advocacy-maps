@@ -257,6 +257,31 @@ describe("whereItStands", () => {
     expect(done.status).toBeUndefined()
   })
 
+  it("attaches the roll call cited on a milestone's line", () => {
+    const s = whereItStands(
+      [
+        h("Referred to the committee on Education", "House"),
+        h("Bill reported favorably by committee", "House"),
+        h(
+          "Read third and passed to be engrossed - 151 YEAS to 0 NAYS (See YEA and NAY No. 270)",
+          "House",
+          "2025-12-18T00:00:00"
+        )
+      ],
+      "H100"
+    )
+    expect(
+      s.milestones.find(m => m.key === "passedFirst")?.rollCall
+    ).toMatchObject({
+      id: "house-270",
+      yeas: 151,
+      nays: 0
+    })
+    expect(
+      s.milestones.find(m => m.key === "reportedOut")?.rollCall
+    ).toBeUndefined()
+  })
+
   it("keeps a bill signed in part as law, not vetoed (H4240)", () => {
     const s = whereItStands(SIGNED_IN_PART_H4240, "H4240")
     expect(s.status).toMatchObject({

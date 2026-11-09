@@ -11,13 +11,15 @@ import { OverlayTrigger, Tooltip } from "components/bootstrap"
 import { Bill } from "components/db"
 import { formatBillId } from "components/formatting"
 import { Internal, maple } from "components/links"
+import Link from "next/link"
 import { useTranslation } from "next-i18next"
-import { ReactNode, useMemo } from "react"
+import { ReactNode, useMemo, useState } from "react"
 import styled from "styled-components"
 import { formatHistoryDate } from "./dates"
 import { documentKind } from "./documentKind"
 import { PanelSection, SourceNote } from "./SourceNote"
 import { Term, TermKey } from "./Term"
+import { useBillUrlState } from "./useBillUrlState"
 
 const Steps = styled.ol`
   list-style: none;
@@ -111,32 +113,30 @@ const Steps = styled.ol`
   }
 `
 
-/** At phone width the steps not yet reached fold into one line that opens
- * on a tap; on wider screens every step is shown. */
-const Remaining = styled.details`
-  summary {
-    list-style: none;
-    cursor: pointer;
+/** At phone width the steps not yet reached fold behind one line that
+ * opens on a tap; on wider screens every step is shown. */
+const Folded = styled.div`
+  .fold-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 0.35rem 0 0.35rem 2rem;
     font-size: 0.875rem;
     color: var(--maple-text-body);
-    padding: 0.35rem 0 0.35rem 2rem;
+    text-align: left;
   }
 
-  summary::-webkit-details-marker {
-    display: none;
-  }
-
-  summary::before {
+  .fold-toggle::before {
     content: "▸ ";
     color: var(--maple-text-muted);
   }
 
-  &[open] summary {
-    display: none;
-  }
+  @media (max-width: 575.98px) {
+    .fold-toggle {
+      display: block;
+    }
 
-  @media (min-width: 576px) {
-    summary {
+    &:not(.open) .fold-steps {
       display: none;
     }
   }
@@ -276,6 +276,8 @@ export function WhereItStandsPanel({
   now?: Date
 }) {
   const { t } = useTranslation("billPage")
+  const { hrefForTab } = useBillUrlState()
+  const [showFolded, setShowFolded] = useState(false)
   const stands: Stands = useMemo(
     () => whereItStands(bill.history, bill.id),
     [bill.history, bill.id]
@@ -337,36 +339,56 @@ export function WhereItStandsPanel({
               <span className="date">{formatHistoryDate(m.date)}</span>
             )}
           </RawLine>
+          {m.rollCall && (
+            <span className="date">
+              <Link
+                href={`${hrefForTab("history")}&rc=${m.rollCall.id}`}
+                shallow
+                scroll={false}
+              >
+                {t("stands.tally", {
+                  yeas: m.rollCall.yeas,
+                  nays: m.rollCall.nays,
+                  number: m.rollCall.number
+                })}
+              </Link>
+            </span>
+          )}
         </span>
         {note && <span className="note">{note}</span>}
       </li>
     )
   }
 
-  // Everything up to the first unreached step with a note stays in view;
-  // the steps after it fold at phone width.
-  const firstHidden = stands.milestones.findIndex(
-    (m, i) =>
-      !m.reached && !noteFor(m) && i > 0 && !stands.milestones[i - 1].reached
+  // The steps up to and including the next one (which carries any absence
+  // note) stay in view; the unreached steps after it fold at phone width.
+  const lastReached = stands.milestones.reduce(
+    (last, m, i) => (m.reached ? i : last),
+    0
   )
-  const shown =
-    firstHidden > 0
-      ? stands.milestones.slice(0, firstHidden)
-      : stands.milestones
-  const folded = firstHidden > 0 ? stands.milestones.slice(firstHidden) : []
+  const foldFrom = Math.min(lastReached + 2, stands.milestones.length)
+  const shown = stands.milestones.slice(0, foldFrom)
+  const folded = stands.milestones.slice(foldFrom)
 
   return (
     <PanelSection title={t("stands.title")} id="where-it-stands">
       <Steps>{shown.map(renderStep)}</Steps>
       {folded.length > 0 && (
-        <Remaining>
-          <summary>
-            {t("stands.remaining", {
-              steps: folded.map(stepName).join(", ")
-            })}
-          </summary>
-          <Steps>{folded.map(renderStep)}</Steps>
-        </Remaining>
+        <Folded className={showFolded ? "open" : undefined}>
+          {!showFolded && (
+            <button
+              type="button"
+              className="fold-toggle"
+              aria-expanded={false}
+              onClick={() => setShowFolded(true)}
+            >
+              {t("stands.remaining", {
+                steps: folded.map(stepName).join(", ")
+              })}
+            </button>
+          )}
+          <Steps className="fold-steps">{folded.map(renderStep)}</Steps>
+        </Folded>
       )}
       {stands.status && (
         <StatusLine>
