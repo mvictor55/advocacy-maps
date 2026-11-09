@@ -29,7 +29,7 @@ const Card = styled.article`
 
   &.highlight {
     background: var(--maple-color-blue-subtle-bg);
-    border-radius: var(--maple-radius-md);
+    border-radius: var(--maple-radius-xl);
     padding-left: var(--maple-space-md);
     padding-right: var(--maple-space-md);
   }
