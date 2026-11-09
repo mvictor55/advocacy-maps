@@ -35,13 +35,13 @@ const Nav = styled.nav`
   }
 
   a:hover {
-    color: var(--maple-brand-primary);
-    background: var(--maple-surface-accent);
+    color: var(--maple-text-strong);
+    background: var(--maple-surface-base);
   }
 
   a[aria-current="page"] {
-    color: var(--maple-brand-primary);
-    border-bottom-color: var(--maple-brand-primary);
+    color: var(--bs-primary);
+    border-bottom-color: var(--bs-primary);
   }
 
   a:focus-visible {
@@ -50,10 +50,17 @@ const Nav = styled.nav`
   }
 
   .count {
-    font-weight: 500;
-    color: var(--maple-text-muted);
-    font-size: 0.8rem;
-    margin-left: 0.3rem;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.2rem;
+    min-width: 1.2rem;
+    text-align: center;
+    padding: 0 0.4rem;
+    margin-left: 0.35rem;
+    border-radius: var(--maple-radius-pill);
+    background: var(--maple-color-gray-subtle-bg);
+    color: var(--maple-text-body);
   }
 `
 

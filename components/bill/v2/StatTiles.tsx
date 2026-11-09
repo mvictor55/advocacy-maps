@@ -20,7 +20,7 @@ const Tile = styled.a`
   display: block;
   background: var(--maple-surface-base);
   border: 1px solid var(--maple-surface-border);
-  border-radius: var(--maple-radius-lg);
+  border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
   padding: 0.7rem 0.85rem;
   color: inherit;
@@ -37,7 +37,6 @@ const Tile = styled.a`
   }
 
   .n {
-    font-family: var(--maple-font-heading);
     font-size: 1.35rem;
     font-weight: 700;
     color: var(--maple-brand-primary);
