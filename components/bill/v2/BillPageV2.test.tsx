@@ -543,6 +543,7 @@ describe("BillPageV2", () => {
     // The committee's report, with members by their vote on the report.
     expect(screen.getByText(/votes.actions.favorable/)).toBeInTheDocument()
     expect(screen.getByText("votes.forReport:1")).toBeInTheDocument()
+    expect(screen.getByText(/votes.branchRule/)).toBeInTheDocument()
     expect(screen.getByText(/votes.reserved:1/)).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "AAA1" })).toHaveAttribute(
       "href",

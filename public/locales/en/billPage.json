@@ -328,6 +328,7 @@
     "copied": "Copied",
     "linkTo": "Link to roll call {{number}}",
     "unreadable": "The bill history also cites a roll call this page couldn't read:",
-    "rollCallSource": "Source: the bill history on malegislature.gov; each tally links to the Legislature's official roll call."
+    "rollCallSource": "Source: the bill history on malegislature.gov; each tally links to the Legislature's official roll call.",
+    "branchRule": "Under the 2025–26 joint rules, only members from the branch where a bill was filed vote on it in committee, except on Senate money bills, House constitutional amendments and matters not filed by a member."
   }
 }

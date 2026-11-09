@@ -20,6 +20,7 @@ import { formatHistoryDate } from "./dates"
 import { documentKind } from "./documentKind"
 import { Muted } from "./SourceNote"
 import { Term } from "./Term"
+import { filedByHouseMember } from "./WhereItStands"
 
 const Report = styled.div`
   padding: var(--maple-space-sm) 0;
@@ -266,7 +267,9 @@ export function CommitteeReports({
       court: bill.court,
       kind: documentKind(bill),
       stands: whereItStands(bill.history, bill.id),
+      history: bill.history,
       hasHearing: true,
+      filedByHouseMember: filedByHouseMember(bill),
       now
     })
     if (!absence.committee) return null
@@ -287,7 +290,10 @@ export function CommitteeReports({
         <Muted>{t("votes.reportedNoVote")}</Muted>
       )}
       {stage.kind === "reportedWithVotes" && (
-        <Muted className="small mb-2">{t("votes.committeeIntro")}</Muted>
+        <Muted className="small mb-2">
+          {t("votes.committeeIntro")}
+          {bill.court >= 194 && <> {t("votes.branchRule")}</>}
+        </Muted>
       )}
       {stage.reports.map((r, i) => (
         <ReportRow
