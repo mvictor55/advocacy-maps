@@ -58,7 +58,9 @@
     "hearingTitle": "Hearing",
     "hearingScheduled": "Hearing scheduled for {{date}}",
     "hearingDetails": "Hearing details",
-    "hearingSee": "Hearing details, video and transcript"
+    "hearingSee": "Hearing details, video and transcript",
+    "lettersTitle": "From the testimony",
+    "lettersNote": "At most one testimony per author; identical letters are shown once."
   },
   "hearing": {
     "title": "Hearings",
@@ -118,9 +120,50 @@
     "substitute": {
       "before": "No testimony is filed under {{bill}}. It's a substitute for",
       "after": "; testimony on this subject is on that bill's page."
-    }
+    },
+    "intro_one": "{{count}} testimony on this bill, from MAPLE users.",
+    "intro_other": "{{count}} testimonies on this bill, from MAPLE users.",
+    "positionFilter": "Filter by position",
+    "allPositions": "All positions ({{count}})",
+    "positionOption": "{{position}} ({{count}})",
+    "roleFilter": "Filter by author",
+    "roleAll": "Everyone",
+    "roleIndividual": "Individuals",
+    "roleOrganization": "Organizations",
+    "sort": "Sort",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "showing": "Showing",
+    "showingCount_one": "({{count}} testimony)",
+    "showingCount_other": "({{count}} testimonies)",
+    "clearFilters": "Clear",
+    "noMatch": "No testimony matches these filters.",
+    "noneCurrent": "No testimony has been submitted on MAPLE for this bill yet.",
+    "nonePast": "No testimony was submitted on MAPLE for this bill.",
+    "cap": "Filters apply to the newest {{max}} of {{total}} testimonies.",
+    "loading": "Loading testimony…",
+    "loadError": "The testimony couldn't be loaded. Try again later.",
+    "showMore": "Show {{count}} more",
+    "remaining_one": "· {{count}} remaining",
+    "remaining_other": "· {{count}} remaining",
+    "yours": "Your testimony"
   },
   "list": {
     "and": "and"
+  },
+  "card": {
+    "readMore": "Read more",
+    "readMoreOf": "Read more of the testimony from {{name}}",
+    "showLess": "Show less",
+    "showLessOf": "Show less of the testimony from {{name}}",
+    "moreDetails": "More details",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "linkTo": "Link to the testimony from {{name}}",
+    "report": "Report",
+    "edit": "Edit testimony",
+    "shared_one": "{{count}} testimony shares this text.",
+    "shared_other": "{{count}} testimonies share this text.",
+    "emptyDraft": "This testimony has no text."
   }
 }

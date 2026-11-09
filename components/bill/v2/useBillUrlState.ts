@@ -1,5 +1,6 @@
 import { useRouter } from "next/router"
 import { useCallback, useMemo } from "react"
+import { parseTestimonyFilters, TestimonyFilters } from "./testimonyFilters"
 
 export const TAB_KEYS = [
   "overview",
@@ -10,6 +11,10 @@ export const TAB_KEYS = [
   "text"
 ] as const
 export type TabKey = (typeof TAB_KEYS)[number]
+
+/** Query parameters that only mean something on the Testimony tab. A link
+ * carrying one of them without `tab` opens that tab. */
+export const TESTIMONY_PARAMS = ["position", "role", "sort"] as const
 
 type Query = Record<string, string | string[] | undefined>
 
@@ -24,12 +29,23 @@ export function parseTab(value: string | string[] | undefined): TabKey {
     : "overview"
 }
 
+/** The tab the whole query asks for: `tab` wins; a testimony filter alone
+ * opens the Testimony tab. */
+export function tabForQuery(query: Query): TabKey {
+  if (query.tab !== undefined) return parseTab(query.tab)
+  if (TESTIMONY_PARAMS.some(k => first(query[k]) !== undefined))
+    return "testimony"
+  return "overview"
+}
+
 /**
  * The query for a tab, keeping every other parameter (pagination, feature
  * flag overrides) as it is. Overview is the page with no `tab` parameter.
+ * Testimony filters belong to the Testimony tab and are dropped on leaving it.
  */
 export function queryForTab(query: Query, tab: TabKey): Query {
   const { tab: _tab, ...rest } = query
+  if (tab !== "testimony") for (const k of TESTIMONY_PARAMS) delete rest[k]
   return tab === "overview" ? rest : { ...rest, tab }
 }
 
@@ -40,18 +56,16 @@ export function routeParams(pathname: string): string[] {
   return [...pathname.matchAll(/\[(?:\.\.\.)?(\w+)\]/g)].map(m => m[1])
 }
 
-/** "/bills/194/H4746?page=2&tab=history": the page's path with the tab and
- * the other query parameters. */
-export function hrefFor(
+/** The page's path with the given query. */
+export function hrefWithQuery(
   asPath: string,
   pathname: string,
-  query: Query,
-  tab: TabKey
+  query: Query
 ): string {
   const path = asPath.split(/[?#]/)[0]
   const params = new URLSearchParams()
   const dynamic = new Set(routeParams(pathname))
-  for (const [key, value] of Object.entries(queryForTab(query, tab))) {
+  for (const [key, value] of Object.entries(query)) {
     if (dynamic.has(key) || value === undefined) continue
     for (const v of Array.isArray(value) ? value : [value])
       params.append(key, v)
@@ -60,13 +74,29 @@ export function hrefFor(
   return qs ? `${path}?${qs}` : path
 }
 
+/** "/bills/194/H4746?page=2&tab=history": the page's path with the tab and
+ * the other query parameters. */
+export function hrefFor(
+  asPath: string,
+  pathname: string,
+  query: Query,
+  tab: TabKey
+): string {
+  return hrefWithQuery(asPath, pathname, queryForTab(query, tab))
+}
+
 /**
- * Which section of the bill page is open, read from and written to the URL
- * so links land on a section and Back and Forward move between sections.
+ * Which section of the bill page is open and how the testimony is filtered,
+ * read from and written to the URL so links land on a section and Back and
+ * Forward move between sections.
  */
 export function useBillUrlState() {
   const router = useRouter()
-  const tab = parseTab(router.query.tab)
+  const tab = tabForQuery(router.query)
+  const filters: TestimonyFilters = useMemo(
+    () => parseTestimonyFilters(router.query),
+    [router.query]
+  )
 
   const hrefForTab = useCallback(
     (next: TabKey) =>
@@ -85,5 +115,26 @@ export function useBillUrlState() {
     [hrefForTab, router, tab]
   )
 
-  return useMemo(() => ({ tab, hrefForTab, setTab }), [tab, hrefForTab, setTab])
+  /** Sets or removes (`null`) query parameters in place, without a history
+   * entry, so a filter change doesn't become a Back stop. */
+  const setParams = useCallback(
+    (changes: Record<string, string | null>) => {
+      const query: Query = { ...router.query }
+      for (const [k, v] of Object.entries(changes)) {
+        if (v === null) delete query[k]
+        else query[k] = v
+      }
+      void router.replace(
+        hrefWithQuery(router.asPath, router.pathname, query),
+        undefined,
+        { shallow: true, scroll: false }
+      )
+    },
+    [router]
+  )
+
+  return useMemo(
+    () => ({ tab, filters, hrefForTab, setTab, setParams }),
+    [tab, filters, hrefForTab, setTab, setParams]
+  )
 }

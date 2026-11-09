@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom"
 import { render, screen, within } from "@testing-library/react"
-import { Bill } from "components/db"
+import { Bill, Testimony } from "components/db"
 import { Timestamp } from "firebase/firestore"
 import { Provider } from "react-redux"
 import configureStore from "redux-mock-store"
@@ -27,6 +27,31 @@ jest.mock("components/featureFlags", () => ({
     billPageV2: true,
     billVotes: false
   })
+}))
+
+const mockTestimony: Testimony[] = []
+jest.mock("./useAllBillTestimony", () => ({
+  MAX_TESTIMONY: 1000,
+  useAllBillTestimony: (court: number, billId: string, enabled: boolean) => ({
+    testimony: enabled ? mockTestimony : undefined,
+    loading: false,
+    error: undefined
+  })
+}))
+
+jest.mock("./BillTestimonyCard", () => ({
+  BillTestimonyCard: ({
+    testimony,
+    shared
+  }: {
+    testimony: Testimony
+    shared?: number
+  }) => (
+    <article data-testid="card">
+      {testimony.fullName}
+      {shared && shared > 1 ? ` shared:${shared}` : ""}
+    </article>
+  )
 }))
 
 jest.mock("next-i18next", () => ({
@@ -238,6 +263,87 @@ describe("BillPageV2", () => {
     expect(screen.getByText("hearing.otherType")).toBeInTheDocument()
     expect(screen.queryByText("billPage:hearing.noneRecorded")).toBeNull()
     expect(screen.getByText("tiles.rollCalls:1")).toBeInTheDocument()
+  })
+
+  const letter = (
+    id: string,
+    authorUid: string,
+    position: Testimony["position"],
+    content: string,
+    millis: number
+  ) =>
+    ({
+      id,
+      billId: "H78",
+      court: 194,
+      authorUid,
+      authorDisplayName: authorUid,
+      fullName: authorUid,
+      authorRole: "user",
+      position,
+      content,
+      publishedAt: Timestamp.fromMillis(millis),
+      version: 1
+    } as unknown as Testimony)
+
+  const form =
+    "Dear committee, I support this bill because consumer data privacy is overdue and residents deserve to know what is collected, to correct it and to delete it. Please report it favorably so the House can vote this session. Thank you for your service."
+
+  it("filters the Testimony tab from the URL and says what is showing", () => {
+    mockTestimony.splice(
+      0,
+      mockTestimony.length,
+      letter("a", "Alex", "endorse", form, 3000),
+      letter("b", "Blake", "oppose", "No.", 2000),
+      letter("c", "Casey", "oppose", "Also no.", 1000)
+    )
+    routerState.asPath = "/bills/194/H78?position=oppose"
+    routerState.query = { court: "194", billId: "H78", position: "oppose" }
+    const store = mockStore({
+      auth: { authenticated: false, user: null, claims: null },
+      publish: { service: {}, showThankYou: false, bill: heard }
+    })
+    render(
+      <Provider store={store}>
+        <BillPageV2 bill={heard} />
+      </Provider>
+    )
+    // A filter link opens the Testimony tab.
+    expect(
+      screen.getByRole("link", { name: /tabs.testimony/ })
+    ).toHaveAttribute("aria-current", "page")
+    const banner = screen.getByRole("status")
+    expect(banner).toHaveTextContent("billPage:stance.oppose")
+    expect(banner).toHaveTextContent("billPage:testimony.showingCount:2")
+    expect(screen.getAllByTestId("card").map(c => c.textContent)).toEqual([
+      "Blake",
+      "Casey"
+    ])
+  })
+
+  it("shows a few letters on the Overview, form letters once", () => {
+    mockTestimony.splice(
+      0,
+      mockTestimony.length,
+      letter("a", "Alex", "endorse", form, 5000),
+      letter(
+        "b",
+        "Blake",
+        "endorse",
+        form.replace("Thank you", "Thanks"),
+        4000
+      ),
+      letter("c", "Casey", "oppose", "No.", 3000),
+      letter("d", "Alex", "endorse", "An earlier letter.", 2000),
+      letter("e", "Drew", "neutral", "Questions remain.", 1000)
+    )
+    renderPage(heard)
+    expect(screen.getAllByTestId("card").map(c => c.textContent)).toEqual([
+      "Alex shared:2",
+      "Casey",
+      "Drew"
+    ])
+    expect(screen.getAllByText("billPage:overview.seeAll:4")).toHaveLength(1)
   })
 
   it("opens the tab named in the URL", () => {

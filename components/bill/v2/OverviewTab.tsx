@@ -4,11 +4,21 @@ import { dateInFuture } from "components/db/events"
 import { fromUnixTime } from "date-fns"
 import { useTranslation } from "next-i18next"
 import { isCurrentCourt } from "functions/src/shared"
+import { useAuth } from "components/auth"
+import { useMemo } from "react"
+import { BillTestimonyCard } from "./BillTestimonyCard"
 import { DraftNote } from "./DraftNote"
 import { DraftOrigin } from "./newDraft"
 import { Muted, PanelSection, SourceNote } from "./SourceNote"
 import { StanceBar } from "./StanceBar"
+import { applyTestimonyFilters, groupLetters } from "./testimonyFilters"
+import { useAllBillTestimony } from "./useAllBillTestimony"
 import { useBillUrlState } from "./useBillUrlState"
+
+/** How many letters the Overview shows before "See all". */
+const OVERVIEW_LETTERS = 3
+/** The Overview reads one page of the newest testimony, not the whole set. */
+const OVERVIEW_PAGE = 100
 
 export function OverviewTab({
   bill,
@@ -25,6 +35,28 @@ export function OverviewTab({
       ? fromUnixTime(bill.nextHearingAt.seconds)
       : undefined
   const hasHearings = (bill.hearingIds?.length ?? 0) > 0
+  const { user } = useAuth()
+  const { testimony } = useAllBillTestimony(
+    bill.court,
+    bill.id,
+    total > 0,
+    OVERVIEW_PAGE
+  )
+  // The reader's own first, then the newest; one per author; a form letter
+  // sent by many people shown once.
+  const letters = useMemo(
+    () =>
+      testimony
+        ? groupLetters(
+            applyTestimonyFilters(
+              testimony,
+              { role: "all", sort: "newest" },
+              user?.uid
+            )
+          ).slice(0, OVERVIEW_LETTERS)
+        : [],
+    [testimony, user?.uid]
+  )
 
   return (
     <>
@@ -41,11 +73,13 @@ export function OverviewTab({
                 oppose: bill.opposeCount ?? 0
               }}
             />
-            <p className="mt-3 mb-0">
-              <Link href={hrefForTab("testimony")} shallow scroll={false}>
-                {t("billPage:overview.seeAll", { count: total })}
-              </Link>
-            </p>
+            {letters.length === 0 && (
+              <p className="mt-3 mb-0">
+                <Link href={hrefForTab("testimony")} shallow scroll={false}>
+                  {t("billPage:overview.seeAll", { count: total })}
+                </Link>
+              </p>
+            )}
           </>
         ) : draft ? (
           <DraftNote bill={bill} draft={draft} about="testimony" />
@@ -60,6 +94,28 @@ export function OverviewTab({
         )}
         <SourceNote>{t("billPage:source.testimony")}</SourceNote>
       </PanelSection>
+
+      {letters.length > 0 && (
+        <PanelSection title={t("billPage:overview.lettersTitle")}>
+          {letters.map(group => (
+            <BillTestimonyCard
+              key={group.representative.id}
+              testimony={group.representative}
+              isOwn={group.representative.authorUid === user?.uid}
+              shared={group.members.length}
+            />
+          ))}
+          <p className="mt-3 mb-0">
+            <Link href={hrefForTab("testimony")} shallow scroll={false}>
+              {t("billPage:overview.seeAll", { count: total })}
+            </Link>
+          </p>
+          <SourceNote>
+            {t("billPage:overview.lettersNote")}{" "}
+            {t("billPage:source.testimony")}
+          </SourceNote>
+        </PanelSection>
+      )}
 
       {(hearingSoon || hasHearings || draft) && (
         <PanelSection title={t("billPage:overview.hearingTitle")}>
