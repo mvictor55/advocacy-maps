@@ -67,9 +67,19 @@ export const IncompleteBackfill: Story = {
 
 export const QuorumCall: Story = {
   args: {
-    rollCall: { ...rollCall, quorum: true, yeas: 6, nays: 0, question: "Quorum Roll Call" },
+    rollCall: {
+      ...rollCall,
+      quorum: true,
+      yeas: 6,
+      nays: 0,
+      question: "Quorum Roll Call"
+    },
     votes: summarizeVotes(
-      [...complete.slice(0, 6), member(6, "Not Voting"), member(7, "Not Voting")],
+      [
+        ...complete.slice(0, 6),
+        member(6, "Not Voting"),
+        member(7, "Not Voting")
+      ],
       { yeas: 6, nays: 0 }
     )
   }
