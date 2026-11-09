@@ -215,6 +215,31 @@ describe("BillPageV2", () => {
     ).toBeInTheDocument()
   })
 
+  it("names the document type instead of claiming an order had no hearing", () => {
+    const order: Bill = {
+      ...newDraft,
+      id: "H2025",
+      content: {
+        ...newDraft.content,
+        BillNumber: "H2025",
+        LegislationTypeName: "Order",
+        Title:
+          "Order relative to the adoption of permanent Rules of the House of Representatives"
+      },
+      history: [
+        {
+          Date: "2025-02-25T00:00:00",
+          Branch: "House",
+          Action: "Order adopted - 128 YEAS to 23 NAYS (See YEA and NAY No. 24)"
+        }
+      ]
+    }
+    renderPage(order, "hearing")
+    expect(screen.getByText("hearing.otherType")).toBeInTheDocument()
+    expect(screen.queryByText("billPage:hearing.noneRecorded")).toBeNull()
+    expect(screen.getByText("tiles.rollCalls:1")).toBeInTheDocument()
+  })
+
   it("opens the tab named in the URL", () => {
     renderPage(heard, "text")
     expect(screen.getByRole("link", { name: "tabs.text" })).toHaveAttribute(

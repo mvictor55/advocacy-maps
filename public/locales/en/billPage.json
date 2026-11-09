@@ -76,7 +76,9 @@
     "substitute": {
       "before": "No hearing is recorded under {{bill}}. It's a substitute for",
       "after": "; the hearing and testimony are on that bill's page."
-    }
+    },
+    "otherType": "The Legislature records this document as “{{type}}”, not a bill, and MAPLE has no hearing on record for it.",
+    "committeeDocument": "This document was reported by a committee rather than filed as a bill. MAPLE has no hearing on record under this number."
   },
   "history": {
     "title": "Bill history"

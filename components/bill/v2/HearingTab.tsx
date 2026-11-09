@@ -5,6 +5,7 @@ import { External, Internal, maple } from "components/links"
 import { fromUnixTime } from "date-fns"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
+import { documentKind } from "./documentKind"
 import { DraftNote } from "./DraftNote"
 import { DraftOrigin } from "./newDraft"
 import { Muted, PanelSection, SourceNote } from "./SourceNote"
@@ -34,6 +35,29 @@ const HearingList = styled.ul`
 /** The number the Legislature gives a hearing: "hearing-5452" → 5452. */
 export function hearingNumber(hearingId: string): number {
   return Number(hearingId.replace(/^hearing-/, ""))
+}
+
+/**
+ * What to say when no hearing is on record. Only a bill or resolve referred
+ * to a joint committee is expected to have one; for orders, amendments,
+ * reports and other documents the sentence says what the document is.
+ */
+function NoHearing({ bill }: { bill: Bill }) {
+  const { t } = useTranslation("billPage")
+  switch (documentKind(bill)) {
+    case "referredBill":
+      return <Muted>{t("hearing.noneRecorded")}</Muted>
+    case "committeeDocument":
+      return <Muted>{t("hearing.committeeDocument")}</Muted>
+    default:
+      return (
+        <Muted>
+          {t("hearing.otherType", {
+            type: bill.content.LegislationTypeName
+          })}
+        </Muted>
+      )
+  }
 }
 
 export function HearingTab({
@@ -91,7 +115,7 @@ export function HearingTab({
       ) : draft ? (
         <DraftNote bill={bill} draft={draft} about="hearing" />
       ) : (
-        !hearingSoon && <Muted>{t("billPage:hearing.noneRecorded")}</Muted>
+        !hearingSoon && <NoHearing bill={bill} />
       )}
       <SourceNote>{t("billPage:source.legislature")}</SourceNote>
     </PanelSection>
