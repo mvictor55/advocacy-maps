@@ -1,3 +1,4 @@
+import { Image } from "components/bootstrap"
 import { useTranslation } from "next-i18next"
 import styled from "styled-components"
 
@@ -13,6 +14,14 @@ export const STANCE_COLORS: Record<keyof StanceCounts, string> = {
   endorse: "var(--bs-green)",
   neutral: "var(--bs-blue)",
   oppose: "var(--bs-orange)"
+}
+
+/** MAPLE's thumbs, as on the testimony counts and cards. Stance is never
+ * shown by color alone. */
+export const STANCE_ICONS: Record<keyof StanceCounts, string> = {
+  endorse: "/thumbs-endorse.svg",
+  neutral: "/thumbs-neutral.svg",
+  oppose: "/thumbs-oppose.svg"
 }
 
 const ORDER: (keyof StanceCounts)[] = ["endorse", "neutral", "oppose"]
@@ -45,6 +54,11 @@ const Legend = styled.ul`
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+  }
+
+  img {
+    height: 16px;
+    width: auto;
   }
 
   b {
@@ -101,6 +115,7 @@ export function StanceBar({
           {ORDER.map(k => (
             <li key={k}>
               <Swatch $color={STANCE_COLORS[k]} />
+              <Image src={STANCE_ICONS[k]} alt="" aria-hidden="true" />
               <b>{counts[k]}</b> {t(`stance.${k}`)}
             </li>
           ))}
