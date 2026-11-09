@@ -1,5 +1,5 @@
 import { useAuth } from "components/auth"
-import { Button, Form } from "components/bootstrap"
+import { Button, Form, Image } from "components/bootstrap"
 import { Bill, Position } from "components/db"
 import { isCurrentCourt } from "functions/src/shared"
 import { useTranslation } from "next-i18next"
@@ -9,6 +9,7 @@ import { BillTestimonyCard } from "./BillTestimonyCard"
 import { DraftNote } from "./DraftNote"
 import { DraftOrigin } from "./newDraft"
 import { Muted, PanelSection, SourceNote } from "./SourceNote"
+import { STANCE_ICONS } from "./StanceBar"
 import {
   applyTestimonyFilters,
   isFiltered,
@@ -24,12 +25,40 @@ const MORE = 25
 
 const Controls = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--maple-space-sm);
   margin: var(--maple-space-sm) 0 var(--maple-space-md);
 
+  > [role="group"] {
+    grid-column: 1 / -1;
+  }
+
   @media (max-width: 575.98px) {
     grid-template-columns: minmax(0, 1fr);
+  }
+`
+
+/** The position filter: MAPLE's thumbs beside each stance, never color
+ * alone. The pressed one is the filter in the URL. */
+const PositionToggles = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--maple-space-sm);
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: var(--maple-radius-md);
+  }
+
+  img {
+    height: 16px;
+    width: auto;
+  }
+
+  .btn-secondary img {
+    filter: brightness(0) invert(1);
   }
 `
 
@@ -41,6 +70,10 @@ const Banner = styled.p`
   padding: var(--maple-space-sm) var(--maple-space-md);
   font-size: 0.9rem;
   margin: 0 0 var(--maple-space-md);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
 
   .btn {
     padding: 0;
@@ -134,23 +167,38 @@ export function TestimonyTab({
         <>
           <Muted>{t("billPage:testimony.intro", { count: total })}</Muted>
           <Controls>
-            <Form.Select
+            <PositionToggles
+              role="group"
               aria-label={t("billPage:testimony.positionFilter")}
-              value={filters.position ?? ""}
-              onChange={e => setParams({ position: e.target.value || null })}
             >
-              <option value="">
+              <Button
+                variant={filters.position ? "outline-secondary" : "secondary"}
+                size="sm"
+                aria-pressed={!filters.position}
+                onClick={() => setParams({ position: null })}
+              >
                 {t("billPage:testimony.allPositions", { count: total })}
-              </option>
+              </Button>
               {POSITIONS.map(p => (
-                <option key={p} value={p}>
+                <Button
+                  key={p}
+                  variant={
+                    filters.position === p ? "secondary" : "outline-secondary"
+                  }
+                  size="sm"
+                  aria-pressed={filters.position === p}
+                  onClick={() =>
+                    setParams({ position: filters.position === p ? null : p })
+                  }
+                >
+                  <Image src={STANCE_ICONS[p]} alt="" aria-hidden="true" />
                   {t("billPage:testimony.positionOption", {
                     position: positionLabel(p),
                     count: positionCount(bill, p)
                   })}
-                </option>
+                </Button>
               ))}
-            </Form.Select>
+            </PositionToggles>
             <Form.Select
               aria-label={t("billPage:testimony.roleFilter")}
               value={filters.role}
