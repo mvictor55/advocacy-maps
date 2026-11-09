@@ -1,0 +1,99 @@
+import { Bill } from "components/db"
+import { dateInFuture } from "components/db/events"
+import { useFlags } from "components/featureFlags"
+import { External, Internal, maple } from "components/links"
+import { fromUnixTime } from "date-fns"
+import { useTranslation } from "next-i18next"
+import styled from "styled-components"
+import { DraftNote } from "./DraftNote"
+import { DraftOrigin } from "./newDraft"
+import { Muted, PanelSection, SourceNote } from "./SourceNote"
+
+const HearingList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: var(--maple-space-sm) 0;
+    border-top: 1px solid var(--maple-surface-border);
+  }
+
+  li:first-child {
+    border-top: 0;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--maple-space-sm) var(--maple-space-lg);
+    font-size: 0.9rem;
+  }
+`
+
+/** The number the Legislature gives a hearing: "hearing-5452" → 5452. */
+export function hearingNumber(hearingId: string): number {
+  return Number(hearingId.replace(/^hearing-/, ""))
+}
+
+export function HearingTab({
+  bill,
+  draft
+}: {
+  bill: Bill
+  draft?: DraftOrigin
+}) {
+  const { t } = useTranslation(["billPage", "common"])
+  const flags = useFlags()
+  const ids = bill.hearingIds ?? []
+  const hearingSoon =
+    bill.nextHearingAt && dateInFuture(bill.nextHearingAt)
+      ? fromUnixTime(bill.nextHearingAt.seconds)
+      : undefined
+
+  return (
+    <PanelSection title={t("billPage:hearing.title")}>
+      {hearingSoon && (
+        <Muted className="mb-2">
+          {t("common:bill.hearing_scheduled_for", { date: hearingSoon })}
+        </Muted>
+      )}
+      {ids.length > 0 ? (
+        <>
+          <Muted className="mb-2">
+            {t("billPage:hearing.intro", { count: ids.length })}
+          </Muted>
+          <HearingList>
+            {ids.map(id => {
+              const n = hearingNumber(id)
+              return (
+                <li key={id}>
+                  <div className="fw-semibold">
+                    {t("billPage:hearing.hearingNumber", { id: n })}
+                  </div>
+                  <div className="links">
+                    {flags.hearingsAndTranscriptions && (
+                      <Internal href={maple.hearing({ eventId: n })}>
+                        {t("billPage:hearing.videoAndTranscript")}
+                      </Internal>
+                    )}
+                    <External
+                      href={`https://malegislature.gov/Events/Hearings/Detail/${n}`}
+                    >
+                      {t("billPage:hearing.onLegislatureSite")}
+                    </External>
+                  </div>
+                </li>
+              )
+            })}
+          </HearingList>
+        </>
+      ) : draft ? (
+        <DraftNote bill={bill} draft={draft} about="hearing" />
+      ) : (
+        !hearingSoon && <Muted>{t("billPage:hearing.noneRecorded")}</Muted>
+      )}
+      <SourceNote>{t("billPage:source.legislature")}</SourceNote>
+    </PanelSection>
+  )
+}

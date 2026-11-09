@@ -1,7 +1,8 @@
 import { ConferenceSummary } from "components/conference/types"
 import { loadConferenceForBill } from "components/conference/load"
+import { BillPageV2 } from "components/bill/v2"
 import { dbService } from "components/db/api"
-import { flags } from "components/featureFlags"
+import { flags, useFlags } from "components/featureFlags"
 import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BillDetails } from "../../../components/bill"
@@ -16,10 +17,15 @@ export default createPage<{ bill: Bill; conference: ConferenceSummary | null }>(
   {
     titleI18nKey: "titles.bill",
     Page: ({ bill, conference }) => {
+      const { billPageV2 } = useFlags()
       return (
         <>
           <usePublishService.Provider />
-          <BillDetails bill={bill} conference={conference} />
+          {billPageV2 ? (
+            <BillPageV2 bill={bill} conference={conference} />
+          ) : (
+            <BillDetails bill={bill} conference={conference} />
+          )}
         </>
       )
     }
@@ -46,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       : null,
     serverSideTranslations(locale, [
       "auth",
+      "billPage",
       "common",
       "footer",
       "lobbying",

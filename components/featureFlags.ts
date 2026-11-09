@@ -21,7 +21,12 @@ export const FeatureFlags = z.object({
   /** Legislators Page feature **/
   legislators: z.boolean().default(false),
   /** Conference committee pages and their links from bills and hearings */
-  conferences: z.boolean().default(false)
+  conferences: z.boolean().default(false),
+  /** The redesigned bill detail page (header, stat tiles and tabs) */
+  billPageV2: z.boolean().default(false),
+  /** How each legislator voted on a roll call, read from the votes
+   * collection. Off everywhere until the votes backend is deployed. */
+  billVotes: z.boolean().default(false)
 })
 
 export type FeatureFlags = z.infer<typeof FeatureFlags>
@@ -44,7 +49,9 @@ const defaults: Record<Env, FeatureFlags> = {
     phoneVerificationUI: true,
     ballotQuestions: false,
     legislators: true,
-    conferences: true
+    conferences: true,
+    billPageV2: true,
+    billVotes: false
   },
   production: {
     testimonyDiffing: false,
@@ -56,7 +63,9 @@ const defaults: Record<Env, FeatureFlags> = {
     phoneVerificationUI: false,
     ballotQuestions: false,
     legislators: false,
-    conferences: false
+    conferences: false,
+    billPageV2: false,
+    billVotes: false
   },
   test: {
     testimonyDiffing: false,
@@ -68,7 +77,9 @@ const defaults: Record<Env, FeatureFlags> = {
     phoneVerificationUI: true,
     ballotQuestions: false,
     legislators: false,
-    conferences: false
+    conferences: false,
+    billPageV2: false,
+    billVotes: false
   }
 }
 

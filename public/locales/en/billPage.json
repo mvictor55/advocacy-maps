@@ -1,0 +1,122 @@
+{
+  "breadcrumb": {
+    "bills": "Bills"
+  },
+  "header": {
+    "court": "{{courtOrdinal}} General Court",
+    "latestAction": "Latest action",
+    "latestActionTooltip": "As recorded by the Legislature on {{date}}",
+    "noHistory": "The Legislature has recorded no actions on this bill yet.",
+    "sponsor": "Sponsor",
+    "committee": "Committee",
+    "hearing": "Hearing",
+    "cosponsors_one": "{{count}} cosponsor",
+    "cosponsors_other": "{{count}} cosponsors",
+    "newDraftOf": "New draft of",
+    "substitutedFor": "Substituted for",
+    "sponsorPhotoAlt": ""
+  },
+  "tiles": {
+    "testimony_one": "testimony",
+    "testimony_other": "testimonies",
+    "hearings_one": "hearing",
+    "hearings_other": "hearings",
+    "rollCalls_one": "roll call in the bill history",
+    "rollCalls_other": "roll calls in the bill history",
+    "organizations_one": "organization lobbying",
+    "organizations_other": "organizations lobbying",
+    "goTo": "Go to {{tab}}"
+  },
+  "tabs": {
+    "ariaLabel": "Bill page sections",
+    "overview": "Overview",
+    "testimony": "Testimony",
+    "hearing": "Hearing",
+    "history": "History & votes",
+    "lobbying": "Lobbying",
+    "text": "Text & summary"
+  },
+  "stance": {
+    "title": "Testimony at a glance",
+    "count_one": "{{count}} testimony",
+    "count_other": "{{count}} testimonies",
+    "label": "{{endorse}} endorse, {{neutral}} neutral, {{oppose}} oppose",
+    "endorse": "Endorse",
+    "neutral": "Neutral",
+    "oppose": "Oppose",
+    "noneCurrent": "No testimony has been submitted on MAPLE for this bill yet.",
+    "nonePast": "No testimony was submitted on MAPLE for this bill."
+  },
+  "source": {
+    "legislature": "Source: the Legislature's record on malegislature.gov.",
+    "testimony": "Source: testimony submitted by MAPLE users.",
+    "ai": "Source: summary and topics written by AI."
+  },
+  "overview": {
+    "seeAll_one": "See the testimony",
+    "seeAll_other": "See all {{count}} testimonies",
+    "hearingTitle": "Hearing",
+    "hearingScheduled": "Hearing scheduled for {{date}}",
+    "hearingDetails": "Hearing details",
+    "hearingSee": "Hearing details, video and transcript"
+  },
+  "hearing": {
+    "title": "Hearings",
+    "intro_one": "The Legislature's record lists {{count}} hearing for this bill.",
+    "intro_other": "The Legislature's record lists {{count}} hearings for this bill.",
+    "hearingNumber": "Hearing {{id}}",
+    "videoAndTranscript": "Video and transcript",
+    "onLegislatureSite": "Hearing details on malegislature.gov",
+    "scheduled": "Scheduled for {{date}}",
+    "noneRecorded": "MAPLE has no hearing on record for this bill.",
+    "newDraft": {
+      "before": "No hearing is recorded under {{bill}}. It's a new draft of",
+      "after": "; their hearings and testimony are on those bills' pages."
+    },
+    "substitute": {
+      "before": "No hearing is recorded under {{bill}}. It's a substitute for",
+      "after": "; the hearing and testimony are on that bill's page."
+    }
+  },
+  "history": {
+    "title": "Bill history"
+  },
+  "lobbying": {
+    "title": "Lobbying on this bill",
+    "orgs_one": "{{count}} organization reported lobbying on this bill.",
+    "orgs_other": "{{count}} organizations reported lobbying on this bill.",
+    "positionNote": "Positions are shown as reported in each lobbying disclosure. Lobbyists are listed under the organization they filed for.",
+    "none": "No lobbying disclosure filed with the Secretary of State names this bill.",
+    "explorer": "Open in the Lobbying Explorer",
+    "loading": "Loading lobbying disclosures…",
+    "notCovered": "MAPLE's lobbying data doesn't cover the {{courtOrdinal}} General Court.",
+    "loadError": "The lobbying disclosures couldn't be loaded. Try again later, or open the Lobbying Explorer."
+  },
+  "text": {
+    "summaryTitle": "Summary",
+    "noSummary": "MAPLE has no AI summary for this bill.",
+    "topics": "Topics",
+    "textTitle": "Bill text as filed",
+    "textNote": "This is the text as filed with the Legislature. If the bill was amended, redrafted or substituted since, the current text is on malegislature.gov.",
+    "currentText": "Current text and documents on malegislature.gov",
+    "pdf": "Download the PDF",
+    "noText": "MAPLE has no text for this bill.",
+    "viewFullSummary": "View full summary",
+    "showFull": "Show the full text",
+    "showLess": "Show less"
+  },
+  "testimony": {
+    "title": "Testimony",
+    "newDraft": {
+      "before": "No testimony is filed under {{bill}}. It's a new draft of",
+      "after": "; testimony on this subject is on those bills' pages."
+    },
+    "substitute": {
+      "before": "No testimony is filed under {{bill}}. It's a substitute for",
+      "after": "; testimony on this subject is on that bill's page."
+    }
+  },
+  "list": {
+    "and": "and"
+  }
+}
