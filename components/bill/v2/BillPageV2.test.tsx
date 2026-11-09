@@ -30,6 +30,34 @@ jest.mock("components/featureFlags", () => ({
 }))
 
 const mockTestimony: Testimony[] = []
+jest.mock("./useBillHearings", () => {
+  const actual = jest.requireActual("./useBillHearings")
+  return {
+    ...actual,
+    useBillHearings: (ids: string[] | undefined) => ({
+      hearings: ids?.length
+        ? [
+            {
+              eventId: 5452,
+              court: 194,
+              date: "2025-05-21T10:00:00.000-04:00",
+              committeeName:
+                "Joint Committee on Advanced Information Technology, the Internet and Cybersecurity",
+              committeeCode: "J33",
+              agenda: [
+                { BillNumber: "H78", GeneralCourtNumber: 194 },
+                { BillNumber: "H80", GeneralCourtNumber: 194 },
+                { BillNumber: "H86", GeneralCourtNumber: 194 }
+              ],
+              hasVideo: true
+            }
+          ]
+        : [],
+      loading: false,
+      error: undefined
+    })
+  }
+})
 jest.mock("./useAllBillTestimony", () => ({
   MAX_TESTIMONY: 1000,
   useAllBillTestimony: (court: number, billId: string, enabled: boolean) => ({
@@ -216,6 +244,70 @@ describe("BillPageV2", () => {
     // Overview: the stance bar with the bill document's counts.
     expect(screen.getAllByRole("img", { name: "stance.label" })).toHaveLength(2)
     expect(screen.getByText("tiles.testimony:4")).toBeInTheDocument()
+  })
+
+  it("lists the hearing with its date, committee and the bills heard with it", () => {
+    renderPage(heard, "hearing")
+    expect(screen.getByText("hearing.dateTime")).toBeInTheDocument()
+    // The committee is linked in the header (current committee) and in the
+    // hearing row.
+    const committeeLinks = screen.getAllByRole("link", {
+      name: /Joint Committee on Advanced/
+    })
+    expect(committeeLinks).toHaveLength(2)
+    committeeLinks.forEach(a =>
+      expect(a).toHaveAttribute(
+        "href",
+        "https://malegislature.gov/Committees/Detail/J33"
+      )
+    )
+    expect(
+      screen.getByRole("link", { name: "hearing.videoAndTranscript" })
+    ).toHaveAttribute("href", "/hearing/5452")
+    // Heard with: the other bills on the agenda, not this one.
+    expect(screen.getByText(/hearing.heardWith:2/)).toBeInTheDocument()
+    const hearingPanel = screen
+      .getByRole("heading", { name: "billPage:hearing.title" })
+      .closest("section")!
+    expect(
+      within(hearingPanel).getByRole("link", { name: "H.80" })
+    ).toHaveAttribute("href", "/bills/194/H80")
+    expect(
+      within(hearingPanel).queryByRole("link", { name: "H.78" })
+    ).toBeNull()
+    // The header also says so, and links to the tab.
+    expect(
+      screen.getByRole("link", { name: "billPage:header.heardWith:2" })
+    ).toHaveAttribute("href", "/bills/194/H78?tab=hearing")
+  })
+
+  it("falls back to the bill history for a session without hearing documents", () => {
+    const older: Bill = {
+      ...heard,
+      id: "H10",
+      court: 193,
+      hearingIds: undefined,
+      history: [
+        {
+          Date: "2023-02-16T00:00:00",
+          Branch: "House",
+          Action: "Referred to the committee on Education"
+        },
+        {
+          Date: "2023-05-01T00:00:00",
+          Branch: "Joint",
+          Action:
+            "Hearing scheduled for 05/08/2023 from 10:00 AM-01:00 PM in A-2"
+        }
+      ]
+    }
+    renderPage(older, "hearing")
+    expect(screen.getByText("billPage:hearing.fromHistory")).toBeInTheDocument()
+    expect(screen.getByText("hearing.scheduledFor")).toBeInTheDocument()
+    expect(
+      screen.queryByRole("link", { name: /videoAndTranscript/ })
+    ).toBeNull()
+    expect(screen.getByText("tiles.hearings:1")).toBeInTheDocument()
   })
 
   it("explains a new draft instead of claiming no hearing", () => {

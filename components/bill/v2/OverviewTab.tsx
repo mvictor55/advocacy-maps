@@ -14,6 +14,8 @@ import { StanceBar } from "./StanceBar"
 import { applyTestimonyFilters, groupLetters } from "./testimonyFilters"
 import { useAllBillTestimony } from "./useAllBillTestimony"
 import { useBillUrlState } from "./useBillUrlState"
+import { formatHearingDate } from "./dates"
+import { BillHearing, heardWith, isOwnSession } from "./useBillHearings"
 
 /** How many letters the Overview shows before "See all". */
 const OVERVIEW_LETTERS = 3
@@ -24,10 +26,13 @@ const OVERVIEW_PAGE = 100
 
 export function OverviewTab({
   bill,
-  draft
+  draft,
+  hearings
 }: {
   bill: Bill
   draft?: DraftOrigin
+  /** The bill's hearing documents, once loaded. */
+  hearings?: BillHearing[]
 }) {
   const { t } = useTranslation(["billPage", "common"])
   const { hrefForTab } = useBillUrlState()
@@ -136,6 +141,34 @@ export function OverviewTab({
           {!hearingSoon && !hasHearings && draft && (
             <DraftNote bill={bill} draft={draft} about="hearing" />
           )}
+          {hasHearings &&
+            hearings
+              ?.filter(h => isOwnSession(h, bill.court))
+              .map(h => (
+                <div key={h.eventId} className="mb-2">
+                  {h.date && (
+                    <div className="fw-semibold">
+                      {t("billPage:overview.hearingHeld", {
+                        date: formatHearingDate(h.date)
+                      })}
+                    </div>
+                  )}
+                  {h.committeeName && (
+                    <Muted>
+                      {t("billPage:overview.hearingCommittee", {
+                        committee: h.committeeName
+                      })}
+                    </Muted>
+                  )}
+                  {heardWith(h, bill.id).length > 0 && (
+                    <Muted className="small">
+                      {t("billPage:header.heardWith", {
+                        count: heardWith(h, bill.id).length
+                      })}
+                    </Muted>
+                  )}
+                </div>
+              ))}
           {hasHearings && (
             <p className="mb-0 mt-1">
               <Link href={hrefForTab("hearing")} shallow scroll={false}>

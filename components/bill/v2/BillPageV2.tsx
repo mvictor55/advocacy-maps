@@ -18,7 +18,9 @@ import styled from "styled-components"
 import { BillHeader } from "./BillHeader"
 import { BillLobbyingProvider, useBillLobbying } from "./billLobbying"
 import { BillTabs, TabSpec } from "./BillTabs"
+import { hearingDatesFromHistory } from "./hearingHistory"
 import { HearingTab } from "./HearingTab"
+import { isOwnSession, useBillHearings } from "./useBillHearings"
 import { HistoryTab } from "./HistoryTab"
 import { LobbyingTab } from "./LobbyingTab"
 import { draftOrigin } from "./newDraft"
@@ -99,6 +101,18 @@ function BillPageBody({
     [bill.history]
   )
   const lobbying = useBillLobbying()
+  const { hearings, loading: hearingsLoading } = useBillHearings(
+    bill.hearingIds
+  )
+  // Hearing documents when the bill has them (those from the bill's own
+  // session, once loaded); otherwise the dates still standing in the
+  // history's hearing notices (earlier sessions).
+  const hearingCount = useMemo(() => {
+    if (!bill.hearingIds) return hearingDatesFromHistory(bill.history).length
+    return hearings
+      ? hearings.filter(h => isOwnSession(h, bill.court)).length
+      : bill.hearingIds.length
+  }, [bill.hearingIds, bill.history, bill.court, hearings])
   const organizations =
     lobbying.status === "ready"
       ? lobbying.organizations
@@ -113,7 +127,7 @@ function BillPageBody({
   const tabs: TabSpec[] = [
     { key: "overview" },
     { key: "testimony", count: bill.testimonyCount ?? 0 },
-    { key: "hearing", count: bill.hearingIds?.length ?? 0 },
+    { key: "hearing", count: hearingCount },
     { key: "history", count: rollCalls },
     ...(flags.lobbyingTable
       ? [{ key: "lobbying" as const, count: organizations ?? 0 }]
@@ -135,6 +149,7 @@ function BillPageBody({
           bill={bill}
           isBallotMeasure={isBallotMeasure}
           draft={draft}
+          hearings={hearings}
         />
         <StatTiles
           testimony={{
@@ -143,7 +158,7 @@ function BillPageBody({
             neutral: bill.neutralCount ?? 0,
             oppose: bill.opposeCount ?? 0
           }}
-          hearings={bill.hearingIds?.length ?? 0}
+          hearings={hearingCount}
           rollCalls={rollCalls}
           organizations={organizations}
         />
@@ -153,9 +168,18 @@ function BillPageBody({
           </div>
           <div style={{ gridArea: "main" }}>
             <BillTabs tabs={tabs} />
-            {tab === "overview" && <OverviewTab bill={bill} draft={draft} />}
+            {tab === "overview" && (
+              <OverviewTab bill={bill} draft={draft} hearings={hearings} />
+            )}
             {tab === "testimony" && <TestimonyTab bill={bill} draft={draft} />}
-            {tab === "hearing" && <HearingTab bill={bill} draft={draft} />}
+            {tab === "hearing" && (
+              <HearingTab
+                bill={bill}
+                draft={draft}
+                hearings={hearings}
+                loading={hearingsLoading}
+              />
+            )}
             {tab === "history" && <HistoryTab bill={bill} />}
             {tab === "lobbying" && <LobbyingTab bill={bill} />}
             {tab === "text" && <TextTab bill={bill} />}

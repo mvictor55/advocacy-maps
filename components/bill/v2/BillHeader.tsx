@@ -14,8 +14,11 @@ import styled from "styled-components"
 import { useAuth } from "components/auth"
 import { OverlayTrigger, Tooltip } from "components/bootstrap"
 import { oneLineActionText, plainActionText } from "./actionText"
-import { formatHistoryDate } from "./dates"
+import { formatHearingDate, formatHistoryDate } from "./dates"
 import { DraftOrigin } from "./newDraft"
+import { BillHearing, heardWith, isOwnSession } from "./useBillHearings"
+import { useBillUrlState } from "./useBillUrlState"
+import Link from "next/link"
 
 const Crumb = styled.div`
   font-size: 0.85rem;
@@ -142,15 +145,26 @@ export function BillLinks({
 export function BillHeader({
   bill,
   isBallotMeasure,
-  draft
+  draft,
+  hearings
 }: {
   bill: Bill
   isBallotMeasure: boolean
   draft?: DraftOrigin
+  /** The bill's hearing documents, once loaded. */
+  hearings?: BillHearing[]
 }) {
   const { t } = useTranslation(["billPage", "common"])
   const flags = useFlags()
   const { user } = useAuth()
+  const { hrefForTab } = useBillUrlState()
+  const ownHearings = hearings?.filter(h => isOwnSession(h, bill.court))
+  const latestHearing = ownHearings?.find(h => h.date)
+  const heardWithCount = ownHearings
+    ? new Set(
+        ownHearings.flatMap(h => heardWith(h, bill.id).map(b => b.BillNumber))
+      ).size
+    : 0
 
   const latest = last(bill.history)
   const primary = bill.content.PrimarySponsor
@@ -247,11 +261,29 @@ export function BillHeader({
             </b>
           </span>
         )}
-        {hearingSoon && (
+        {hearingSoon ? (
           <span>
             <b>
               {t("common:bill.hearing_scheduled_for", { date: hearingSoon })}
             </b>
+          </span>
+        ) : (
+          latestHearing && (
+            <span>
+              {t("billPage:header.hearing")}:{" "}
+              <b>
+                <Link href={hrefForTab("hearing")} shallow scroll={false}>
+                  {formatHearingDate(latestHearing.date)}
+                </Link>
+              </b>
+            </span>
+          )
+        )}
+        {heardWithCount > 0 && (
+          <span>
+            <Link href={hrefForTab("hearing")} shallow scroll={false}>
+              {t("billPage:header.heardWith", { count: heardWithCount })}
+            </Link>
           </span>
         )}
         {!isBallotMeasure && cosponsors.length > 0 && (

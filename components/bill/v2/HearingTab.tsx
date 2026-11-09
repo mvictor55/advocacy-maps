@@ -1,27 +1,54 @@
+import { Button } from "components/bootstrap"
 import { Bill } from "components/db"
 import { dateInFuture } from "components/db/events"
 import { useFlags } from "components/featureFlags"
-import { External, Internal, maple } from "components/links"
+import { formatBillId } from "components/formatting"
+import { committeeURL, External, Internal, maple } from "components/links"
+import { OverlayTrigger, Tooltip } from "components/bootstrap"
 import { fromUnixTime } from "date-fns"
 import { useTranslation } from "next-i18next"
+import { Fragment, useState } from "react"
 import styled from "styled-components"
+import {
+  formatHearingDate,
+  formatHearingTime,
+  formatHistoryDate
+} from "./dates"
 import { documentKind } from "./documentKind"
 import { DraftNote } from "./DraftNote"
+import { hearingsFromHistory, HistoryHearing } from "./hearingHistory"
 import { DraftOrigin } from "./newDraft"
 import { Muted, PanelSection, SourceNote } from "./SourceNote"
+import {
+  AgendaBill,
+  BillHearing,
+  heardWith,
+  isOwnSession
+} from "./useBillHearings"
+import { courtOrdinal } from "components/lobbying/sessions"
+
+/** How many "heard with" bills are listed before "and N more". */
+export const HEARD_WITH_SHOWN = 10
 
 const HearingList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
 
-  li {
-    padding: var(--maple-space-sm) 0;
+  > li {
+    padding: var(--maple-space-md) 0;
     border-top: 1px solid var(--maple-surface-border);
   }
 
-  li:first-child {
+  > li:first-child {
     border-top: 0;
+    padding-top: 0;
+  }
+
+  .when {
+    font-family: var(--maple-font-heading);
+    font-weight: 600;
+    color: var(--maple-text-strong);
   }
 
   .links {
@@ -29,12 +56,185 @@ const HearingList = styled.ul`
     flex-wrap: wrap;
     gap: var(--maple-space-sm) var(--maple-space-lg);
     font-size: 0.9rem;
+    margin-top: var(--maple-space-xs);
+  }
+
+  .heard-with {
+    font-size: 0.9rem;
+    margin-top: var(--maple-space-sm);
+    color: var(--maple-text-body);
+  }
+
+  .heard-with .btn {
+    padding: 0;
+    font-size: inherit;
+    vertical-align: baseline;
   }
 `
 
-/** The number the Legislature gives a hearing: "hearing-5452" → 5452. */
-export function hearingNumber(hearingId: string): number {
-  return Number(hearingId.replace(/^hearing-/, ""))
+/** "H.78, H.80, … and 30 more", each linking to its bill page. */
+export function HeardWith({
+  bills,
+  shown = HEARD_WITH_SHOWN
+}: {
+  bills: AgendaBill[]
+  shown?: number
+}) {
+  const { t } = useTranslation("billPage")
+  const [open, setOpen] = useState(false)
+  if (bills.length === 0) return null
+  const visible = open ? bills : bills.slice(0, shown)
+  const rest = bills.length - visible.length
+  return (
+    <p className="heard-with mb-0">
+      {t("hearing.heardWith", { count: bills.length })}{" "}
+      {visible.map((b, i) => (
+        <Fragment key={`${b.GeneralCourtNumber}-${b.BillNumber}`}>
+          {i > 0 && ", "}
+          <Internal
+            href={maple.bill({ court: b.GeneralCourtNumber, id: b.BillNumber })}
+            title={b.Title}
+          >
+            {formatBillId(b.BillNumber)}
+          </Internal>
+        </Fragment>
+      ))}
+      {rest > 0 && (
+        <>
+          {" "}
+          <Button
+            variant="link"
+            aria-expanded={false}
+            onClick={() => setOpen(true)}
+          >
+            {t("hearing.andMore", { count: rest })}
+          </Button>
+        </>
+      )}
+      {open && bills.length > shown && (
+        <>
+          {" "}
+          <Button
+            variant="link"
+            aria-expanded={true}
+            onClick={() => setOpen(false)}
+          >
+            {t("hearing.showFewer")}
+          </Button>
+        </>
+      )}
+    </p>
+  )
+}
+
+/** The hearings from the Legislature's hearing documents. */
+export function HearingDocumentList({
+  bill,
+  hearings
+}: {
+  bill: Bill
+  hearings: BillHearing[]
+}) {
+  const { t } = useTranslation("billPage")
+  const flags = useFlags()
+  return (
+    <HearingList>
+      {hearings.map(h => {
+        const time = formatHearingTime(h.date)
+        const ownSession = isOwnSession(h, bill.court)
+        return (
+          <li key={h.eventId}>
+            {!ownSession && h.court && (
+              <Muted className="small mb-1">
+                {t("hearing.otherSession", {
+                  courtOrdinal: courtOrdinal(h.court),
+                  bill: formatBillId(bill.id)
+                })}
+              </Muted>
+            )}
+            <div className="when">
+              {h.date
+                ? time
+                  ? t("hearing.dateTime", {
+                      date: formatHearingDate(h.date),
+                      time
+                    })
+                  : formatHearingDate(h.date)
+                : t("hearing.hearingNumber", { id: h.eventId })}
+            </div>
+            {h.committeeName && (
+              <div>
+                {h.committeeCode ? (
+                  <External href={committeeURL(h.committeeCode)}>
+                    {h.committeeName}
+                  </External>
+                ) : (
+                  h.committeeName
+                )}
+              </div>
+            )}
+            <div className="links">
+              {flags.hearingsAndTranscriptions && (
+                <Internal href={maple.hearing({ eventId: h.eventId })}>
+                  {t(
+                    h.hasVideo
+                      ? "hearing.videoAndTranscript"
+                      : "hearing.hearingPage"
+                  )}
+                </Internal>
+              )}
+              <External
+                href={`https://malegislature.gov/Events/Hearings/Detail/${h.eventId}`}
+              >
+                {t("hearing.onLegislatureSite")}
+              </External>
+            </div>
+            {ownSession && <HeardWith bills={heardWith(h, bill.id)} />}
+          </li>
+        )
+      })}
+    </HearingList>
+  )
+}
+
+/** Hearing notices read from the bill history, for sessions MAPLE has no
+ * hearing documents for. No video or transcript is linked. */
+export function HistoryHearingList({ notices }: { notices: HistoryHearing[] }) {
+  const { t } = useTranslation("billPage")
+  return (
+    <HearingList>
+      {notices.map(n => (
+        <li key={n.historyIndex}>
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id={`hearing-line-${n.historyIndex}`}>
+                {n.action}
+              </Tooltip>
+            }
+          >
+            <div className="when" tabIndex={0}>
+              {n.kind === "canceled"
+                ? t("hearing.canceled")
+                : t(
+                    n.kind === "rescheduled"
+                      ? "hearing.rescheduledTo"
+                      : "hearing.scheduledFor",
+                    {
+                      date: formatHistoryDate(n.date),
+                      time:
+                        n.start && n.end ? `${n.start}–${n.end}` : n.start ?? ""
+                    }
+                  )}
+            </div>
+          </OverlayTrigger>
+          {n.kind !== "canceled" && (n.location || n.committee) && (
+            <div>{[n.committee, n.location].filter(Boolean).join(" · ")}</div>
+          )}
+        </li>
+      ))}
+    </HearingList>
+  )
 }
 
 /**
@@ -63,61 +263,62 @@ function NoHearing({ bill }: { bill: Bill }) {
 
 export function HearingTab({
   bill,
-  draft
+  draft,
+  hearings,
+  loading
 }: {
   bill: Bill
   draft?: DraftOrigin
+  /** The bill's hearing documents; undefined while loading. */
+  hearings: BillHearing[] | undefined
+  loading: boolean
 }) {
   const { t } = useTranslation(["billPage", "common"])
-  const flags = useFlags()
   const ids = bill.hearingIds ?? []
+  const notices = hearingsFromHistory(bill.history)
   const hearingSoon =
     bill.nextHearingAt && dateInFuture(bill.nextHearingAt)
       ? fromUnixTime(bill.nextHearingAt.seconds)
       : undefined
 
-  return (
-    <PanelSection title={t("billPage:hearing.title")}>
-      {hearingSoon && (
-        <Muted className="mb-2">
-          {t("common:bill.hearing_scheduled_for", { date: hearingSoon })}
+  let body
+  if (ids.length > 0) {
+    body = (
+      <>
+        <Muted className="mb-3">
+          {t("billPage:hearing.intro", { count: ids.length })}
         </Muted>
-      )}
-      {ids.length > 0 ? (
-        <>
-          <Muted className="mb-2">
-            {t("billPage:hearing.intro", { count: ids.length })}
-          </Muted>
-          <HearingList>
-            {ids.map(id => {
-              const n = hearingNumber(id)
-              return (
-                <li key={id}>
-                  <div className="fw-semibold">
-                    {t("billPage:hearing.hearingNumber", { id: n })}
-                  </div>
-                  <div className="links">
-                    {flags.hearingsAndTranscriptions && (
-                      <Internal href={maple.hearing({ eventId: n })}>
-                        {t("billPage:hearing.videoAndTranscript")}
-                      </Internal>
-                    )}
-                    <External
-                      href={`https://malegislature.gov/Events/Hearings/Detail/${n}`}
-                    >
-                      {t("billPage:hearing.onLegislatureSite")}
-                    </External>
-                  </div>
-                </li>
-              )
-            })}
-          </HearingList>
-        </>
-      ) : draft ? (
-        <DraftNote bill={bill} draft={draft} about="hearing" />
-      ) : (
-        !hearingSoon && <NoHearing bill={bill} />
-      )}
+        {loading && !hearings && <Muted>{t("billPage:hearing.loading")}</Muted>}
+        {hearings && hearings.length > 0 && (
+          <HearingDocumentList bill={bill} hearings={hearings} />
+        )}
+        {hearings && hearings.length === 0 && (
+          <Muted>{t("billPage:hearing.loadError")}</Muted>
+        )}
+      </>
+    )
+  } else if (notices.length > 0) {
+    body = (
+      <>
+        <Muted className="mb-3">{t("billPage:hearing.fromHistory")}</Muted>
+        <HistoryHearingList notices={notices} />
+      </>
+    )
+  } else if (draft) {
+    body = <DraftNote bill={bill} draft={draft} about="hearing" />
+  } else if (hearingSoon) {
+    body = (
+      <Muted>
+        {t("common:bill.hearing_scheduled_for", { date: hearingSoon })}
+      </Muted>
+    )
+  } else {
+    body = <NoHearing bill={bill} />
+  }
+
+  return (
+    <PanelSection title={t("billPage:hearing.title")} id="hearing">
+      {body}
       <SourceNote>{t("billPage:source.legislature")}</SourceNote>
     </PanelSection>
   )

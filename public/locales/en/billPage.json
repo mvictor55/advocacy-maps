@@ -14,7 +14,9 @@
     "cosponsors_other": "{{count}} cosponsors",
     "newDraftOf": "New draft of",
     "substitutedFor": "Substituted for",
-    "sponsorPhotoAlt": ""
+    "sponsorPhotoAlt": "",
+    "heardWith_one": "Heard with {{count}} other bill",
+    "heardWith_other": "Heard with {{count}} other bills"
   },
   "tiles": {
     "testimony_one": "testimony",
@@ -60,7 +62,9 @@
     "hearingDetails": "Hearing details",
     "hearingSee": "Hearing details, video and transcript",
     "lettersTitle": "From the testimony",
-    "lettersNote": "At most one testimony per author; identical letters are shown once."
+    "lettersNote": "At most one testimony per author; identical letters are shown once.",
+    "hearingHeld": "Hearing {{date}}",
+    "hearingCommittee": "Before the {{committee}}"
   },
   "hearing": {
     "title": "Hearings",
@@ -80,7 +84,20 @@
       "after": "; the hearing and testimony are on that bill's page."
     },
     "otherType": "The Legislature records this document as “{{type}}”, not a bill, and MAPLE has no hearing on record for it.",
-    "committeeDocument": "This document was reported by a committee rather than filed as a bill. MAPLE has no hearing on record under this number."
+    "committeeDocument": "This document was reported by a committee rather than filed as a bill. MAPLE has no hearing on record under this number.",
+    "dateTime": "{{date}}, {{time}}",
+    "hearingPage": "Hearing page",
+    "loading": "Loading hearing details…",
+    "loadError": "The hearing details couldn't be loaded.",
+    "fromHistory": "From the bill history. MAPLE has no hearing documents, video or transcript for this session.",
+    "scheduledFor": "Hearing scheduled for {{date}}, {{time}}",
+    "rescheduledTo": "Hearing rescheduled to {{date}}, {{time}}",
+    "canceled": "Hearing canceled",
+    "heardWith_one": "Heard with {{count}} other bill:",
+    "heardWith_other": "Heard with {{count}} other bills:",
+    "andMore": "and {{count}} more",
+    "showFewer": "Show fewer",
+    "otherSession": "This hearing is from the {{courtOrdinal}} General Court, so it was on that session's {{bill}}, not this bill."
   },
   "history": {
     "title": "Bill history"
