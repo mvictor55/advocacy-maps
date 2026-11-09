@@ -227,7 +227,7 @@
     "learnMore": "About the legislative process",
     "studyOrder": {
       "term": "study order",
-      "definition": "A committee's recommendation that a bill be studied further instead of advancing. In practice it ends the bill for the session; a bill can be taken back out of a study order, but most are not."
+      "definition": "A committee's recommendation that a bill be studied instead of advancing. The study rarely happens; in practice the bill goes no further this session and must be refiled to be considered again."
     },
     "reportedFavorably": {
       "term": "reported favorably",
@@ -235,11 +235,11 @@
     },
     "reservedRight": {
       "term": "reserved their rights",
-      "definition": "A committee member who neither supported nor opposed the committee's report at the time, keeping the right to vote either way when the bill reaches the floor."
+      "definition": "Took no position on the committee's report (in effect, an abstention), reserving the right to take one later."
     },
     "engrossed": {
       "term": "engrossed",
-      "definition": "“Passed to be engrossed” means one branch (House or Senate) approved the bill's text after its third reading. The other branch must do the same before the bill can go to the Governor."
+      "definition": "“Passed to be engrossed” means one branch (House or Senate) approved the bill's text after its third reading. Both branches must engross the same text, and then each votes to enact it, before the bill goes to the Governor."
     },
     "newDraft": {
       "term": "new draft",
@@ -247,7 +247,7 @@
     },
     "jointRule10": {
       "term": "Joint Rule 10",
-      "definition": "The rule setting the deadline for joint committees to report on the bills referred to them. A bill not reported by the deadline is, under current rules, sent to study."
+      "definition": "The joint rule that sets the deadline for joint committees to report on the bills referred to them: in 2025–26, the first Wednesday of December 2025, unless the committee is granted an extension. Bills filed by House members follow House Rule 27 instead: 60 days after the hearing, plus up to 30 more, after which the House chair files a study order."
     },
     "placedOnFile": {
       "term": "placed on file",
@@ -255,11 +255,11 @@
     },
     "conferenceCommittee": {
       "term": "conference committee",
-      "definition": "Three members from each branch appointed to work out one version of a bill when the House and Senate passed different versions. Its report must be accepted by both branches."
+      "definition": "Usually three members from each branch, appointed to work out one version of a bill when the House and Senate passed different versions. Its report must be accepted by both branches."
     },
     "rollCall": {
       "term": "roll call",
-      "definition": "A vote in which each member's yea or nay is recorded by name. Most votes are voice votes with no count; a roll call is taken when members ask for one or the rules require it."
+      "definition": "A vote in which each member's yea or nay is recorded by name. Most votes are voice votes with no count; a roll call is taken when enough members request one or the rules require it."
     },
     "ordersOfTheDay": {
       "term": "Orders of the Day",
@@ -275,7 +275,7 @@
     },
     "enacted": {
       "term": "enacted",
-      "definition": "The final vote by which each branch approves the exact text of a bill before it goes to the Governor. In Massachusetts, “enacted” is a legislative step; a bill becomes law only when the Governor signs it or lets it take effect."
+      "definition": "The final vote by which each branch approves the exact text of a bill before it goes to the Governor. In Massachusetts, “enacted” is a legislative step; a bill becomes law when the Governor signs it, lets it take effect without signing, or both branches override a veto."
     }
   },
   "votes": {

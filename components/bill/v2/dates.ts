@@ -35,3 +35,12 @@ export function formatHearingTime(iso: string | null | undefined): string {
   if (!dt.isValid || (dt.hour === 0 && dt.minute === 0)) return ""
   return dt.setLocale("en-US").toFormat("h:mm a")
 }
+
+/** "2025-05-21" for a hearing document's date-time, in Massachusetts. */
+export function hearingIsoDate(
+  iso: string | null | undefined
+): string | undefined {
+  if (!iso) return undefined
+  const dt = DateTime.fromISO(iso, { setZone: true }).setZone(LEGISLATURE_ZONE)
+  return dt.isValid ? dt.toISODate() ?? undefined : undefined
+}

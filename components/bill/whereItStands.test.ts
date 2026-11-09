@@ -1,4 +1,5 @@
 import { absenceSentences } from "./absence"
+import { extensionDates, parseLongDate, reportDeadline } from "./reportDeadline"
 import { courtCalendar } from "./courtCalendar"
 import { whereAnOrderStands, whereItStands } from "./whereItStands"
 
@@ -382,7 +383,7 @@ describe("courtCalendar", () => {
 describe("absenceSentences", () => {
   const inCommittee = whereItStands(STUDY_H1001.slice(0, 2), "H1001")
   const reported = whereItStands(LAW_H2268.slice(0, 4), "H2268")
-  const base = { court: 194, kind: "referredBill" as const }
+  const base = { court: 194, kind: "referredBill" as const, history: [] }
 
   it('says "yet" only while the step can still happen in the 194th', () => {
     const before = new Date("2025-11-09T12:00:00Z")
@@ -439,6 +440,7 @@ describe("absenceSentences", () => {
       absenceSentences({
         court: 193,
         kind: "referredBill",
+        history: [],
         stands: inCommittee,
         hasHearing: false,
         now
@@ -470,5 +472,135 @@ describe("absenceSentences", () => {
         now
       })
     ).toEqual({})
+  })
+})
+
+describe("reportDeadline", () => {
+  // H1351 (194th): three extension orders while in Health Care Financing.
+  const EXTENDED = [
+    h(
+      "Referred to the committee on Health Care Financing",
+      "House",
+      "2025-02-27T00:00:00"
+    ),
+    h(
+      "Hearing scheduled for 07/01/2025 from 10:00 AM-12:30 PM in Gardner Auditorium",
+      "Joint"
+    ),
+    h(
+      "Reporting date extended to Wednesday, March 18, 2026",
+      "House",
+      "2025-09-15T00:00:00"
+    ),
+    h("Reporting date extended until Wednesday, March 18, 2026", "House"),
+    h(
+      "Reporting date extended to Monday, June 15, 2026",
+      "House",
+      "2026-03-19T00:00:00"
+    ),
+    h(
+      "Reporting date extended to Friday, July 31, 2026",
+      "House",
+      "2026-06-17T00:00:00"
+    )
+  ]
+
+  it("reads the Legislature's long dates", () => {
+    expect(parseLongDate("Wednesday, March 18, 2026")).toBe("2026-03-18")
+    expect(parseLongDate("Wednesday July 31, 2024")).toBe("2024-07-31")
+    expect(parseLongDate("Sunday June 30, 2024")).toBe("2024-06-30")
+    expect(parseLongDate("next week")).toBeUndefined()
+  })
+
+  it("reads extension orders, including the 193rd's forms", () => {
+    expect(extensionDates(EXTENDED)).toEqual([
+      "2026-03-18",
+      "2026-03-18",
+      "2026-06-15",
+      "2026-07-31"
+    ])
+    expect(
+      extensionDates([
+        h(
+          "Reporting date extended to Wednesday July 31, 2024, pending concurrence",
+          "House"
+        ),
+        h(
+          "Amendment (changing reporting date to Wednesday July 31, 2024) adopted, pending concurrence",
+          "Senate"
+        )
+      ])
+    ).toEqual(["2024-07-31", "2024-07-31"])
+  })
+
+  it("is the latest of the session deadline, the extensions and the House Rule 27 window", () => {
+    expect(
+      reportDeadline({ court: 194, history: [], filedByHouseMember: false })
+    ).toBe("2025-12-03")
+    expect(
+      reportDeadline({
+        court: 194,
+        history: EXTENDED,
+        filedByHouseMember: true,
+        hearingDate: "2025-07-01"
+      })
+    ).toBe("2026-07-31")
+    // A House member's bill heard late in the year: 90 days after the hearing.
+    expect(
+      reportDeadline({
+        court: 194,
+        history: [],
+        filedByHouseMember: true,
+        hearingDate: "2025-11-04"
+      })
+    ).toBe("2026-02-02")
+    // Senate-filed: the hearing window doesn't apply.
+    expect(
+      reportDeadline({
+        court: 194,
+        history: [],
+        filedByHouseMember: false,
+        hearingDate: "2025-11-04"
+      })
+    ).toBe("2025-12-03")
+    // Earlier sessions: House Rule 27 didn't exist.
+    expect(
+      reportDeadline({
+        court: 193,
+        history: [],
+        filedByHouseMember: true,
+        hearingDate: "2023-12-01"
+      })
+    ).toBe("2024-02-07")
+  })
+
+  it('keeps "yet" until a bill\'s own extended deadline', () => {
+    const stands = whereItStands(EXTENDED, "H1351")
+    const common = {
+      court: 194,
+      kind: "referredBill" as const,
+      stands,
+      history: EXTENDED,
+      hasHearing: true,
+      hearingDate: "2025-07-01",
+      filedByHouseMember: true
+    }
+    // After the session deadline (2025-12-03) but before the extension.
+    expect(
+      absenceSentences({ ...common, now: new Date("2026-05-01T12:00:00Z") })
+    ).toEqual({ committee: "noReportYet" })
+    expect(
+      absenceSentences({ ...common, now: new Date("2026-08-15T12:00:00Z") })
+    ).toEqual({ committee: "noReportRecorded" })
+    // The same bill without the extension orders, past its hearing + 90 days.
+    const plain = whereItStands(EXTENDED.slice(0, 2), "H1351")
+    expect(
+      absenceSentences({
+        ...common,
+        stands: plain,
+        history: EXTENDED.slice(0, 2),
+        now: new Date("2026-05-01T12:00:00Z")
+      })
+    ).toEqual({ committee: "noReportRecorded" })
   })
 })
