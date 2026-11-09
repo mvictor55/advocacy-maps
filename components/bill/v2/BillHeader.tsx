@@ -23,7 +23,7 @@ import Link from "next/link"
 
 const Crumb = styled.div`
   font-size: 0.85rem;
-  color: var(--maple-text-muted);
+  color: var(--maple-text-body);
   margin-bottom: var(--maple-space-sm);
 
   a {
@@ -32,7 +32,6 @@ const Crumb = styled.div`
 `
 
 const NumberLine = styled.div`
-  font-family: var(--maple-font-heading);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -44,7 +43,6 @@ const NumberLine = styled.div`
 `
 
 const Title = styled.h1`
-  font-family: var(--maple-font-heading);
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.25;
@@ -56,17 +54,47 @@ const Title = styled.h1`
   }
 `
 
-const StatusLine = styled.p`
-  font-size: 0.95rem;
+/** The plain-language status, as MAPLE's half-pill navy flag (today's
+ * bill page shows the latest action the same way). */
+const StatusFlag = styled.div`
+  display: inline-block;
+  max-width: 100%;
+  background: var(--bs-secondary);
+  color: var(--maple-text-inverse);
+  border-radius: var(--maple-radius-pill) 0 0 var(--maple-radius-pill);
+  padding: 0.4rem var(--maple-space-lg) 0.4rem var(--maple-space-xl);
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: default;
+
+  &:focus-visible {
+    outline: 3px solid var(--maple-focus-border);
+    outline-offset: 2px;
+  }
+`
+
+const FlagColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--maple-space-sm);
+  flex-shrink: 0;
+  max-width: 45%;
+
+  @media (max-width: 767.98px) {
+    max-width: 100%;
+    align-items: flex-start;
+  }
+`
+
+const LatestAction = styled.p`
+  font-size: 0.9rem;
   color: var(--maple-text-body);
   margin: 0 0 var(--maple-space-sm);
 
   b {
     color: var(--maple-text-strong);
-  }
-
-  a {
-    color: inherit;
   }
 `
 
@@ -103,6 +131,10 @@ const TopRow = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--maple-space-md);
+
+  @media (max-width: 767.98px) {
+    flex-direction: column;
+  }
 `
 
 const DraftLine = styled.p`
@@ -198,40 +230,35 @@ export function BillHeader({
           </NumberLine>
           <Title>{bill.content.Title}</Title>
         </div>
-        {flags.notifications && user && (
-          <div className="flex-shrink-0">
-            <FollowBillButton bill={bill} />
-          </div>
-        )}
+        <FlagColumn>
+          {latest && (
+            <OverlayTrigger
+              placement="bottom"
+              overlay={
+                <Tooltip id="bill-latest-action">
+                  {t("billPage:header.latestActionTooltip", {
+                    date: formatHistoryDate(latest.Date)
+                  })}
+                  <br />
+                  {plainActionText(latest.Action)}
+                </Tooltip>
+              }
+            >
+              <StatusFlag tabIndex={0}>{summary.text}</StatusFlag>
+            </OverlayTrigger>
+          )}
+          {flags.notifications && user && <FollowBillButton bill={bill} />}
+        </FlagColumn>
       </TopRow>
 
       {latest ? (
-        <StatusLine>
-          <OverlayTrigger
-            placement="bottom"
-            overlay={
-              <Tooltip id="bill-latest-action">
-                {t("billPage:header.latestActionTooltip", {
-                  date: formatHistoryDate(latest.Date)
-                })}
-                <br />
-                {plainActionText(latest.Action)}
-              </Tooltip>
-            }
-          >
-            <span tabIndex={0}>
-              <b>{summary.text}</b>
-              <span className="text-muted">
-                {" "}
-                · {t("billPage:header.latestAction")}{" "}
-                {formatHistoryDate(latest.Date)}:{" "}
-                {oneLineActionText(latest.Action)}
-              </span>
-            </span>
-          </OverlayTrigger>
-        </StatusLine>
+        <LatestAction>
+          <b>{t("billPage:header.latestAction")}</b>
+          {latest.Date && <> ({formatHistoryDate(latest.Date)})</>}:{" "}
+          {oneLineActionText(latest.Action)}
+        </LatestAction>
       ) : (
-        <StatusLine>{t("billPage:header.noHistory")}</StatusLine>
+        <LatestAction>{t("billPage:header.noHistory")}</LatestAction>
       )}
 
       <Meta>
