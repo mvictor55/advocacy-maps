@@ -15,26 +15,40 @@ export const SourceNote = styled.p.attrs({ className: "mb-0" })`
   }
 `
 
-/** A surface for one section of the page. */
+/** A surface for one section of the page: MAPLE's card. */
 export const Panel = styled.section`
   background: var(--maple-surface-base);
   border: 1px solid var(--maple-surface-border);
-  border-radius: var(--maple-radius-lg);
+  border-radius: var(--maple-radius-xl);
   box-shadow: var(--maple-shadow-sm);
-  padding: var(--maple-space-lg) var(--maple-space-xl);
   margin-bottom: var(--maple-space-lg);
+  overflow: hidden;
+`
+
+/** The navy title bar MAPLE's cards use (today's "Sponsors", "Testimonies"). */
+export const PanelHeader = styled.div`
+  background: var(--bs-secondary);
+  color: var(--maple-text-inverse);
+  padding: var(--maple-space-sm) var(--maple-space-xl);
 
   @media (max-width: 575.98px) {
-    padding: var(--maple-space-md) var(--maple-space-lg);
+    padding: var(--maple-space-sm) var(--maple-space-lg);
   }
 `
 
 export const PanelTitle = styled.h2`
-  font-family: var(--maple-font-heading);
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--maple-text-strong);
-  margin: 0 0 var(--maple-space-sm);
+  color: inherit;
+  margin: 0;
+`
+
+export const PanelBody = styled.div`
+  padding: var(--maple-space-lg) var(--maple-space-xl);
+
+  @media (max-width: 575.98px) {
+    padding: var(--maple-space-md) var(--maple-space-lg);
+  }
 `
 
 export const Muted = styled.p`
@@ -55,8 +69,12 @@ export function PanelSection({
 }) {
   return (
     <Panel id={id} className={className}>
-      {title && <PanelTitle>{title}</PanelTitle>}
-      {children}
+      {title && (
+        <PanelHeader>
+          <PanelTitle>{title}</PanelTitle>
+        </PanelHeader>
+      )}
+      <PanelBody>{children}</PanelBody>
     </Panel>
   )
 }
