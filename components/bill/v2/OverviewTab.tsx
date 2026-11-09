@@ -17,6 +17,8 @@ import { useBillUrlState } from "./useBillUrlState"
 
 /** How many letters the Overview shows before "See all". */
 const OVERVIEW_LETTERS = 3
+/** At phone width, so the Overview stays short. */
+const OVERVIEW_LETTERS_PHONE = 2
 /** The Overview reads one page of the newest testimony, not the whole set. */
 const OVERVIEW_PAGE = 100
 
@@ -97,13 +99,20 @@ export function OverviewTab({
 
       {letters.length > 0 && (
         <PanelSection title={t("billPage:overview.lettersTitle")}>
-          {letters.map(group => (
-            <BillTestimonyCard
+          {letters.map((group, i) => (
+            <div
               key={group.representative.id}
-              testimony={group.representative}
-              isOwn={group.representative.authorUid === user?.uid}
-              shared={group.members.length}
-            />
+              // Two letters at phone width, three on wider screens.
+              className={
+                i >= OVERVIEW_LETTERS_PHONE ? "d-none d-sm-block" : undefined
+              }
+            >
+              <BillTestimonyCard
+                testimony={group.representative}
+                isOwn={group.representative.authorUid === user?.uid}
+                shared={group.members.length}
+              />
+            </div>
           ))}
           <p className="mt-3 mb-0">
             <Link href={hrefForTab("testimony")} shallow scroll={false}>
