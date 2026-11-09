@@ -16,7 +16,7 @@ import { OverlayTrigger, Tooltip } from "components/bootstrap"
 import { oneLineActionText, plainActionText } from "./actionText"
 import { formatHearingDate, formatHistoryDate } from "./dates"
 import { DraftOrigin } from "./newDraft"
-import { BillHearing, heardWith, isOwnSession } from "./useBillHearings"
+import { BillHearing, heardWith } from "./useBillHearings"
 import { useBillUrlState } from "./useBillUrlState"
 import Link from "next/link"
 
@@ -158,11 +158,10 @@ export function BillHeader({
   const flags = useFlags()
   const { user } = useAuth()
   const { hrefForTab } = useBillUrlState()
-  const ownHearings = hearings?.filter(h => isOwnSession(h, bill.court))
-  const latestHearing = ownHearings?.find(h => h.date)
-  const heardWithCount = ownHearings
+  const latestHearing = hearings?.find(h => h.date)
+  const heardWithCount = hearings
     ? new Set(
-        ownHearings.flatMap(h => heardWith(h, bill.id).map(b => b.BillNumber))
+        hearings.flatMap(h => heardWith(h, bill.id).map(b => b.BillNumber))
       ).size
     : 0
 

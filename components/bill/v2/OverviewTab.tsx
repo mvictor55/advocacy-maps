@@ -15,7 +15,7 @@ import { applyTestimonyFilters, groupLetters } from "./testimonyFilters"
 import { useAllBillTestimony } from "./useAllBillTestimony"
 import { useBillUrlState } from "./useBillUrlState"
 import { formatHearingDate } from "./dates"
-import { BillHearing, heardWith, isOwnSession } from "./useBillHearings"
+import { BillHearing, heardWith } from "./useBillHearings"
 
 /** How many letters the Overview shows before "See all". */
 const OVERVIEW_LETTERS = 3
@@ -41,7 +41,10 @@ export function OverviewTab({
     bill.nextHearingAt && dateInFuture(bill.nextHearingAt)
       ? fromUnixTime(bill.nextHearingAt.seconds)
       : undefined
-  const hasHearings = (bill.hearingIds?.length ?? 0) > 0
+  // Hearing documents from this session, or ids still loading.
+  const hasHearings = hearings
+    ? hearings.length > 0
+    : (bill.hearingIds?.length ?? 0) > 0
   const { user } = useAuth()
   const { testimony } = useAllBillTestimony(
     bill.court,
@@ -142,33 +145,31 @@ export function OverviewTab({
             <DraftNote bill={bill} draft={draft} about="hearing" />
           )}
           {hasHearings &&
-            hearings
-              ?.filter(h => isOwnSession(h, bill.court))
-              .map(h => (
-                <div key={h.eventId} className="mb-2">
-                  {h.date && (
-                    <div className="fw-semibold">
-                      {t("billPage:overview.hearingHeld", {
-                        date: formatHearingDate(h.date)
-                      })}
-                    </div>
-                  )}
-                  {h.committeeName && (
-                    <Muted>
-                      {t("billPage:overview.hearingCommittee", {
-                        committee: h.committeeName
-                      })}
-                    </Muted>
-                  )}
-                  {heardWith(h, bill.id).length > 0 && (
-                    <Muted className="small">
-                      {t("billPage:header.heardWith", {
-                        count: heardWith(h, bill.id).length
-                      })}
-                    </Muted>
-                  )}
-                </div>
-              ))}
+            hearings?.map(h => (
+              <div key={h.eventId} className="mb-2">
+                {h.date && (
+                  <div className="fw-semibold">
+                    {t("billPage:overview.hearingHeld", {
+                      date: formatHearingDate(h.date)
+                    })}
+                  </div>
+                )}
+                {h.committeeName && (
+                  <Muted>
+                    {t("billPage:overview.hearingCommittee", {
+                      committee: h.committeeName
+                    })}
+                  </Muted>
+                )}
+                {heardWith(h, bill.id).length > 0 && (
+                  <Muted className="small">
+                    {t("billPage:header.heardWith", {
+                      count: heardWith(h, bill.id).length
+                    })}
+                  </Muted>
+                )}
+              </div>
+            ))}
           {hasHearings && (
             <p className="mb-0 mt-1">
               <Link href={hrefForTab("hearing")} shallow scroll={false}>

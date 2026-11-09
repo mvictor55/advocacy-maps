@@ -2,6 +2,7 @@ import "@testing-library/jest-dom"
 import { fireEvent, render, screen } from "@testing-library/react"
 import { Bill } from "components/db"
 import { HearingDocumentList } from "./HearingTab"
+import { ownSessionHearings } from "./useBillHearings"
 
 jest.mock("components/featureFlags", () => ({
   useFlags: () => ({ hearingsAndTranscriptions: true })
@@ -22,37 +23,22 @@ const bill = {
 } as unknown as Bill
 
 describe("HearingDocumentList", () => {
-  it("says when a hearing belongs to another session, and lists no heard-with bills for it", () => {
-    render(
-      <HearingDocumentList
-        bill={bill}
-        hearings={[
-          {
-            eventId: 4626,
-            court: 193,
-            date: "2023-07-13T13:00:00.000-04:00",
-            committeeName: "Joint Committee on Advanced Information Technology",
-            committeeCode: "J33",
-            agenda: [
-              { BillNumber: "H78", GeneralCourtNumber: 193 },
-              { BillNumber: "H59", GeneralCourtNumber: 193 }
-            ],
-            hasVideo: true
-          }
-        ]}
-      />
-    )
+  it("keeps only hearings from the bill's own session", () => {
+    const hearing = (eventId: number, court: number | null) => ({
+      eventId,
+      court,
+      date: null,
+      committeeName: null,
+      committeeCode: null,
+      agenda: [],
+      hasVideo: false
+    })
     expect(
-      screen.getByText(
-        'hearing.otherSession {"courtOrdinal":"193rd","bill":"H.78"}'
-      )
-    ).toBeInTheDocument()
-    expect(screen.queryByRole("link", { name: "H.59" })).toBeNull()
-    expect(
-      screen.getByText(
-        'hearing.dateTime {"date":"Jul 13, 2023","time":"1:00 PM"}'
-      )
-    ).toBeInTheDocument()
+      ownSessionHearings(
+        [hearing(4626, 193), hearing(5452, 194), hearing(1, null)],
+        194
+      ).map(h => h.eventId)
+    ).toEqual([5452, 1])
   })
 
   it("shows ten heard-with bills, then the rest on request", () => {

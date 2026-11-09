@@ -20,7 +20,7 @@ import { BillLobbyingProvider, useBillLobbying } from "./billLobbying"
 import { BillTabs, TabSpec } from "./BillTabs"
 import { hearingDatesFromHistory } from "./hearingHistory"
 import { HearingTab } from "./HearingTab"
-import { isOwnSession, useBillHearings } from "./useBillHearings"
+import { useBillHearings } from "./useBillHearings"
 import { HistoryTab } from "./HistoryTab"
 import { LobbyingTab } from "./LobbyingTab"
 import { draftOrigin } from "./newDraft"
@@ -102,17 +102,17 @@ function BillPageBody({
   )
   const lobbying = useBillLobbying()
   const { hearings, loading: hearingsLoading } = useBillHearings(
-    bill.hearingIds
+    bill.hearingIds,
+    bill.court
   )
   // Hearing documents when the bill has them (those from the bill's own
   // session, once loaded); otherwise the dates still standing in the
   // history's hearing notices (earlier sessions).
   const hearingCount = useMemo(() => {
-    if (!bill.hearingIds) return hearingDatesFromHistory(bill.history).length
-    return hearings
-      ? hearings.filter(h => isOwnSession(h, bill.court)).length
-      : bill.hearingIds.length
-  }, [bill.hearingIds, bill.history, bill.court, hearings])
+    if (!bill.hearingIds?.length)
+      return hearingDatesFromHistory(bill.history).length
+    return hearings ? hearings.length : bill.hearingIds.length
+  }, [bill.hearingIds, bill.history, hearings])
   const organizations =
     lobbying.status === "ready"
       ? lobbying.organizations

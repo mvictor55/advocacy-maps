@@ -34,7 +34,7 @@ jest.mock("./useBillHearings", () => {
   const actual = jest.requireActual("./useBillHearings")
   return {
     ...actual,
-    useBillHearings: (ids: string[] | undefined) => ({
+    useBillHearings: (ids: string[] | undefined, _court: number) => ({
       hearings: ids?.length
         ? [
             {

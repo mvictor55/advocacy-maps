@@ -19,13 +19,7 @@ import { DraftNote } from "./DraftNote"
 import { hearingsFromHistory, HistoryHearing } from "./hearingHistory"
 import { DraftOrigin } from "./newDraft"
 import { Muted, PanelSection, SourceNote } from "./SourceNote"
-import {
-  AgendaBill,
-  BillHearing,
-  heardWith,
-  isOwnSession
-} from "./useBillHearings"
-import { courtOrdinal } from "components/lobbying/sessions"
+import { AgendaBill, BillHearing, heardWith } from "./useBillHearings"
 
 /** How many "heard with" bills are listed before "and N more". */
 export const HEARD_WITH_SHOWN = 10
@@ -141,17 +135,8 @@ export function HearingDocumentList({
     <HearingList>
       {hearings.map(h => {
         const time = formatHearingTime(h.date)
-        const ownSession = isOwnSession(h, bill.court)
         return (
           <li key={h.eventId}>
-            {!ownSession && h.court && (
-              <Muted className="small mb-1">
-                {t("hearing.otherSession", {
-                  courtOrdinal: courtOrdinal(h.court),
-                  bill: formatBillId(bill.id)
-                })}
-              </Muted>
-            )}
             <div className="when">
               {h.date
                 ? time
@@ -189,7 +174,7 @@ export function HearingDocumentList({
                 {t("hearing.onLegislatureSite")}
               </External>
             </div>
-            {ownSession && <HeardWith bills={heardWith(h, bill.id)} />}
+            <HeardWith bills={heardWith(h, bill.id)} />
           </li>
         )
       })}
@@ -269,12 +254,12 @@ export function HearingTab({
 }: {
   bill: Bill
   draft?: DraftOrigin
-  /** The bill's hearing documents; undefined while loading. */
+  /** The bill's hearings from its own session; undefined while loading. */
   hearings: BillHearing[] | undefined
   loading: boolean
 }) {
   const { t } = useTranslation(["billPage", "common"])
-  const ids = bill.hearingIds ?? []
+  const hasIds = (bill.hearingIds?.length ?? 0) > 0
   const notices = hearingsFromHistory(bill.history)
   const hearingSoon =
     bill.nextHearingAt && dateInFuture(bill.nextHearingAt)
@@ -282,19 +267,19 @@ export function HearingTab({
       : undefined
 
   let body
-  if (ids.length > 0) {
+  if (hasIds && hearings === undefined) {
+    body = (
+      <Muted>
+        {t(loading ? "billPage:hearing.loading" : "billPage:hearing.loadError")}
+      </Muted>
+    )
+  } else if (hearings && hearings.length > 0) {
     body = (
       <>
         <Muted className="mb-3">
-          {t("billPage:hearing.intro", { count: ids.length })}
+          {t("billPage:hearing.intro", { count: hearings.length })}
         </Muted>
-        {loading && !hearings && <Muted>{t("billPage:hearing.loading")}</Muted>}
-        {hearings && hearings.length > 0 && (
-          <HearingDocumentList bill={bill} hearings={hearings} />
-        )}
-        {hearings && hearings.length === 0 && (
-          <Muted>{t("billPage:hearing.loadError")}</Muted>
-        )}
+        <HearingDocumentList bill={bill} hearings={hearings} />
       </>
     )
   } else if (notices.length > 0) {

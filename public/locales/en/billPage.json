@@ -89,15 +89,14 @@
     "hearingPage": "Hearing page",
     "loading": "Loading hearing details…",
     "loadError": "The hearing details couldn't be loaded.",
-    "fromHistory": "From the bill history. MAPLE has no hearing documents, video or transcript for this session.",
+    "fromHistory": "From the bill history. MAPLE has no hearing document for this bill, so there is no video or transcript.",
     "scheduledFor": "Hearing scheduled for {{date}}, {{time}}",
     "rescheduledTo": "Hearing rescheduled to {{date}}, {{time}}",
     "canceled": "Hearing canceled",
     "heardWith_one": "Heard with {{count}} other bill:",
     "heardWith_other": "Heard with {{count}} other bills:",
     "andMore": "and {{count}} more",
-    "showFewer": "Show fewer",
-    "otherSession": "This hearing is from the {{courtOrdinal}} General Court, so it was on that session's {{bill}}, not this bill."
+    "showFewer": "Show fewer"
   },
   "history": {
     "title": "Bill history"
