@@ -51,7 +51,6 @@ const List = styled.div`
   }
 
   .tally {
-    font-family: var(--maple-font-heading);
     font-weight: 600;
     color: var(--maple-text-strong);
     white-space: nowrap;
