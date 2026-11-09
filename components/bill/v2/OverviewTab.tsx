@@ -14,8 +14,10 @@ import { StanceBar } from "./StanceBar"
 import { applyTestimonyFilters, groupLetters } from "./testimonyFilters"
 import { useAllBillTestimony } from "./useAllBillTestimony"
 import { useBillUrlState } from "./useBillUrlState"
-import { formatHearingDate } from "./dates"
+import { formatHearingDate, formatHistoryDate } from "./dates"
 import { BillHearing, heardWith } from "./useBillHearings"
+import { WhereItStandsPanel } from "./WhereItStands"
+import { hearingDatesFromHistory } from "./hearingHistory"
 
 /** How many letters the Overview shows before "See all". */
 const OVERVIEW_LETTERS = 3
@@ -104,6 +106,22 @@ export function OverviewTab({
         )}
         <SourceNote>{t("billPage:source.testimony")}</SourceNote>
       </PanelSection>
+
+      <WhereItStandsPanel
+        bill={bill}
+        hasHearing={
+          hasHearings || hearingDatesFromHistory(bill.history).length > 0
+        }
+        hearingDate={
+          hearings?.find(h => h.date)
+            ? formatHearingDate(hearings.find(h => h.date)!.date)
+            : hearingDatesFromHistory(bill.history).length > 0
+            ? formatHistoryDate(
+                hearingDatesFromHistory(bill.history).slice(-1)[0]
+              )
+            : undefined
+        }
+      />
 
       {letters.length > 0 && (
         <PanelSection title={t("billPage:overview.lettersTitle")}>

@@ -181,5 +181,100 @@
     "shared_one": "{{count}} testimony shares this text.",
     "shared_other": "{{count}} testimonies share this text.",
     "emptyDraft": "This testimony has no text."
+  },
+  "stands": {
+    "title": "Where it stands",
+    "source": "Read from the Legislature's record of actions on this bill; hover a step for the Legislature's own wording.",
+    "recordedAs": "Recorded as:",
+    "inCommitteeNamed": "In committee ({{committee}})",
+    "steps": {
+      "filed": "Filed",
+      "inCommittee": "In committee",
+      "reportedOut": "Reported out of committee",
+      "passed": "Passed the {{branch}}",
+      "toGovernor": "Sent to the Governor",
+      "law": "Signed into law",
+      "adopted": "Adopted"
+    },
+    "status": {
+      "law": "Signed into law",
+      "inPart": "in part",
+      "supersededBy": "Continues as",
+      "sentToStudy": "Sent to study (presumed dead)",
+      "deadAtDissolution": "Died when the {{court}}th General Court ended",
+      "placedOnFile": "Placed on file",
+      "adverseReport": "Reported “ought not to pass”",
+      "vetoed": "Vetoed by the Governor",
+      "returnedWithAmendment": "Returned by the Governor with an amendment",
+      "inConference": "In conference committee since {{date}}"
+    },
+    "notes": {
+      "hearing": "Hearing {{date}}",
+      "noHearingYet": "No hearing scheduled yet.",
+      "noHearingRecorded": "No hearing is recorded for this bill.",
+      "noReportYet": "The committee hasn't reported yet.",
+      "noReportRecorded": "No committee report is recorded.",
+      "noFloorActionYet": "No floor action yet.",
+      "noFloorActionRecorded": "No floor action recorded.",
+      "orderNotAdopted": "Not adopted so far."
+    },
+    "orderSource": "An order is adopted by one branch and does not go to the Governor. Read from the Legislature's record.",
+    "otherDocument": "Recorded as “{{type}}”",
+    "remaining": "Not yet: {{steps}}"
+  },
+  "terms": {
+    "learnMore": "About the legislative process",
+    "studyOrder": {
+      "term": "study order",
+      "definition": "A committee's recommendation that a bill be studied further instead of advancing. In practice it ends the bill for the session; a bill can be taken back out of a study order, but most are not."
+    },
+    "reportedFavorably": {
+      "term": "reported favorably",
+      "definition": "The committee recommended that the bill “ought to pass”, sending it on to the next step. A favorable report is a recommendation, not a vote by the full House or Senate."
+    },
+    "reservedRight": {
+      "term": "reserved their rights",
+      "definition": "A committee member who neither supported nor opposed the committee's report at the time, keeping the right to vote either way when the bill reaches the floor."
+    },
+    "engrossed": {
+      "term": "engrossed",
+      "definition": "“Passed to be engrossed” means one branch (House or Senate) approved the bill's text after its third reading. The other branch must do the same before the bill can go to the Governor."
+    },
+    "newDraft": {
+      "term": "new draft",
+      "definition": "A rewritten version of a bill that a committee reports under a new bill number. From then on, progress is recorded on the new number, and the original stops moving."
+    },
+    "jointRule10": {
+      "term": "Joint Rule 10",
+      "definition": "The rule setting the deadline for joint committees to report on the bills referred to them. A bill not reported by the deadline is, under current rules, sent to study."
+    },
+    "placedOnFile": {
+      "term": "placed on file",
+      "definition": "Set aside without further action. A document placed on file is not expected to advance."
+    },
+    "conferenceCommittee": {
+      "term": "conference committee",
+      "definition": "Three members from each branch appointed to work out one version of a bill when the House and Senate passed different versions. Its report must be accepted by both branches."
+    },
+    "rollCall": {
+      "term": "roll call",
+      "definition": "A vote in which each member's yea or nay is recorded by name. Most votes are voice votes with no count; a roll call is taken when members ask for one or the rules require it."
+    },
+    "ordersOfTheDay": {
+      "term": "Orders of the Day",
+      "definition": "The House or Senate calendar of matters scheduled for action at a sitting. Placing a bill in the Orders of the Day brings it to the floor."
+    },
+    "correctlyDrawn": {
+      "term": "correctly drawn",
+      "definition": "The finding of the committee on Bills in the Third Reading that a bill's text is in proper legal form before its third reading."
+    },
+    "billsInTheThirdReading": {
+      "term": "Bills in the Third Reading",
+      "definition": "A committee in each branch that reviews a bill's wording for legal form and consistency after its second reading, before the branch votes on passing it to be engrossed."
+    },
+    "enacted": {
+      "term": "enacted",
+      "definition": "The final vote by which each branch approves the exact text of a bill before it goes to the Governor. In Massachusetts, “enacted” is a legislative step; a bill becomes law only when the Governor signs it or lets it take effect."
+    }
   }
 }

@@ -18,6 +18,7 @@ import { formatHearingDate, formatHistoryDate } from "./dates"
 import { DraftOrigin } from "./newDraft"
 import { BillHearing, heardWith } from "./useBillHearings"
 import { useBillUrlState } from "./useBillUrlState"
+import { useStandsSummary } from "./WhereItStands"
 import Link from "next/link"
 
 const Crumb = styled.div`
@@ -166,6 +167,7 @@ export function BillHeader({
     : 0
 
   const latest = last(bill.history)
+  const summary = useStandsSummary(bill)
   const primary = bill.content.PrimarySponsor
   const cosponsors = bill.content.Cosponsors.filter(s => s.Id !== primary?.Id)
   const committee = bill.currentCommittee
@@ -205,7 +207,6 @@ export function BillHeader({
 
       {latest ? (
         <StatusLine>
-          <b>{t("billPage:header.latestAction")}:</b>{" "}
           <OverlayTrigger
             placement="bottom"
             overlay={
@@ -218,14 +219,16 @@ export function BillHeader({
               </Tooltip>
             }
           >
-            <span tabIndex={0}>{oneLineActionText(latest.Action)}</span>
-          </OverlayTrigger>
-          {latest.Date && (
-            <span className="text-muted">
-              {" "}
-              · {formatHistoryDate(latest.Date)}
+            <span tabIndex={0}>
+              <b>{summary.text}</b>
+              <span className="text-muted">
+                {" "}
+                · {t("billPage:header.latestAction")}{" "}
+                {formatHistoryDate(latest.Date)}:{" "}
+                {oneLineActionText(latest.Action)}
+              </span>
             </span>
-          )}
+          </OverlayTrigger>
         </StatusLine>
       ) : (
         <StatusLine>{t("billPage:header.noHistory")}</StatusLine>

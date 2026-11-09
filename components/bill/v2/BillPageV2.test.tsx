@@ -226,9 +226,21 @@ describe("BillPageV2", () => {
     expect(
       screen.getByRole("button", { name: "billPage:header.cosponsors:2" })
     ).toBeInTheDocument()
+    // The header leads with the plain-language status and keeps the
+    // Legislature's latest action beside it.
     expect(
-      screen.getByText("Accompanied a new draft, see H4746")
+      screen.getByText("stands.status.supersededBy H.4746")
     ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Accompanied a new draft, see H4746/)
+    ).toBeInTheDocument()
+    // Where it stands: the frozen bill continues as H.4746.
+    expect(screen.getByText("stands.title")).toBeInTheDocument()
+    expect(screen.getByRole("listitem", { current: "step" })).toHaveTextContent(
+      "stands.steps.inCommittee"
+    )
+    // The steps not reached fold into one line at phone width.
+    expect(screen.getByText(/stands.remaining/)).toBeInTheDocument()
 
     const nav = screen.getByRole("navigation", { name: "tabs.ariaLabel" })
     const tabs = within(nav).getAllByRole("link")
