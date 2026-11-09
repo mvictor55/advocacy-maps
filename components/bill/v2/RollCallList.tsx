@@ -148,6 +148,15 @@ export function RollCallList({
   useEffect(() => {
     openRef.current?.scrollIntoView?.({ block: "center" })
   }, [openId])
+  // Which roll calls the reader has opened: their extra content (the
+  // members' votes) is read only then.
+  const [opened, setOpened] = useState<Set<string>>(
+    () => new Set(openId ? [openId] : [])
+  )
+  useEffect(() => {
+    if (openId)
+      setOpened(prev => (prev.has(openId) ? prev : new Set(prev).add(openId)))
+  }, [openId])
 
   return (
     <List>
@@ -161,6 +170,12 @@ export function RollCallList({
             open={open || undefined}
             ref={open ? openRef : undefined}
             className={open ? "highlight" : undefined}
+            onToggle={e => {
+              if ((e.currentTarget as HTMLDetailsElement).open)
+                setOpened(prev =>
+                  prev.has(r.id) ? prev : new Set(prev).add(r.id)
+                )
+            }}
           >
             <summary>
               <span className="when">
@@ -186,7 +201,7 @@ export function RollCallList({
                 <Muted as="span">{t("votes.noPdf")}</Muted>
               )}
               <CopyRollCallLink rollCall={r} />
-              {children?.(r)}
+              {opened.has(r.id) && children?.(r)}
             </div>
           </details>
         )

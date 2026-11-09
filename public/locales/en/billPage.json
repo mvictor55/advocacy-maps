@@ -329,7 +329,21 @@
     "linkTo": "Link to roll call {{number}}",
     "unreadable": "The bill history also cites a roll call this page couldn't read:",
     "rollCallSource": "Source: the bill history on malegislature.gov; each tally links to the Legislature's official roll call.",
-    "branchRule": "Under the 2025–26 joint rules, only members from the branch where a bill was filed vote on it in committee, except on Senate money bills, House constitutional amendments and matters not filed by a member."
+    "branchRule": "Under the 2025–26 joint rules, only members from the branch where a bill was filed vote on it in committee, except on Senate money bills, House constitutional amendments and matters not filed by a member.",
+    "members": {
+      "loading": "Loading how each member voted…",
+      "incomplete": "The member-by-member list for this roll call is incomplete ({{yeas}} of {{tallyYeas}} yeas, {{nays}} of {{tallyNays}} nays recorded).",
+      "quorum": "On a quorum call, “Yea” means the member was present.",
+      "Yea_one": "Yea ({{count}})",
+      "Yea_other": "Yea ({{count}})",
+      "Nay_one": "Nay ({{count}})",
+      "Nay_other": "Nay ({{count}})",
+      "NotVoting_one": "Not voting ({{count}})",
+      "NotVoting_other": "Not voting ({{count}})",
+      "Present_one": "Present ({{count}})",
+      "Present_other": "Present ({{count}})",
+      "source": "Source: the Legislature's roll call records, as collected by MAPLE."
+    }
   },
   "head": {
     "title": "{{bill}}: {{title}} | {{maple}}",

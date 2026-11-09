@@ -8,6 +8,8 @@ import { CommitteeReports } from "./CommitteeReports"
 import { RollCallList } from "./RollCallList"
 import { Muted, PanelSection, SourceNote } from "./SourceNote"
 import { useBillUrlState } from "./useBillUrlState"
+import { useFlags } from "components/featureFlags"
+import { RollCallMembers } from "./RollCallMembers"
 
 /**
  * The Legislature's record of the bill: its history, the committee's
@@ -16,6 +18,7 @@ import { useBillUrlState } from "./useBillUrlState"
 export function HistoryTab({ bill }: { bill: Bill }) {
   const { t } = useTranslation("billPage")
   const { rollCallId } = useBillUrlState()
+  const flags = useFlags()
   const { rollCalls, unreadable } = useMemo(
     () => rollCallsFromHistory(bill.history),
     [bill.history]
@@ -40,7 +43,17 @@ export function HistoryTab({ bill }: { bill: Bill }) {
               rollCalls={rollCalls}
               unreadable={unreadable}
               openId={rollCallId}
-            />
+            >
+              {flags.billVotes
+                ? r => (
+                    <RollCallMembers
+                      court={bill.court}
+                      billId={bill.id}
+                      rollCall={r}
+                    />
+                  )
+                : undefined}
+            </RollCallList>
           </>
         ) : (
           <Muted>{t("votes.noRollCalls")}</Muted>
