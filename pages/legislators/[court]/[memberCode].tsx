@@ -2,8 +2,9 @@ import { GetServerSideProps } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { z } from "zod"
 
-import { flags } from "components/featureFlags"
+import { flags, useFlags } from "components/featureFlags"
 import { LegislatorProfilePage } from "components/LegislatorProfile"
+import { LegislatorProfileV2 } from "components/LegislatorProfile/v2"
 import { createPage } from "components/page"
 
 const Query = z.object({
@@ -16,9 +17,14 @@ export default createPage<{
   memberCode: string
 }>({
   titleI18nKey: "navigation.legislator",
-  Page: ({ court, memberCode }) => (
-    <LegislatorProfilePage court={court} memberCode={memberCode} />
-  )
+  Page: ({ court, memberCode }) => {
+    const { legislatorProfileV2 } = useFlags()
+    return legislatorProfileV2 ? (
+      <LegislatorProfileV2 court={court} memberCode={memberCode} />
+    ) : (
+      <LegislatorProfilePage court={court} memberCode={memberCode} />
+    )
+  }
 })
 
 export const getServerSideProps: GetServerSideProps = async ctx => {

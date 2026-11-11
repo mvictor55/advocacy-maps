@@ -87,5 +87,256 @@
   "textLimit": "text is too long; please use 250 characters or less",
   "upcomingHearings": "Upcoming Hearings",
   "viewAllHearings": "View all hearings",
-  "viewAllTestimony": "View all testimony"
+  "viewAllTestimony": "View all testimony",
+  "v2": {
+    "head": {
+      "title": "{{name}} | {{maple}}"
+    },
+    "crumbs": {
+      "label": "Breadcrumb"
+    },
+    "common": {
+      "loading": "Loading…",
+      "error": "This couldn’t be loaded. Try again later.",
+      "showMore": "Show more",
+      "show": "Show",
+      "hide": "Hide",
+      "possessive": "{{title}}’s"
+    },
+    "header": {
+      "court": "{{court}} General Court",
+      "photoAlt": "Official photo of {{name}}",
+      "claimed": "Claimed by {{title}}’s office",
+      "unclaimed": "Unclaimed page",
+      "room": "State House, Room {{room}}",
+      "official": "Official page on malegislature.gov",
+      "followHint": "Activity from this legislator shows in your newsfeed.",
+      "signInToFollow": "Sign in to follow",
+      "findYours": "Not sure who represents you? Find your legislators"
+    },
+    "claim": {
+      "prompt": "{{title}} or staff?",
+      "open": "Claim this page",
+      "how": "MAPLE confirms a claim through the address on the legislator’s official page, {{email}}. Email {{maple}} from that address to start.",
+      "send": "Email MAPLE from the official address",
+      "cancel": "Cancel",
+      "mailSubject": "Claim the MAPLE page for {{name}}",
+      "mailBody": "We’d like to claim the MAPLE legislator page for {{name}}: {{url}}"
+    },
+    "facts": {
+      "lead": "Bills as lead sponsor",
+      "cosponsored": "Bills cosponsored",
+      "committees": "Committees"
+    },
+    "nav": {
+      "label": "Profile sections",
+      "overview": "Overview",
+      "bills": "Bills",
+      "votes": "Votes",
+      "testimony": "Testimony",
+      "committees": "Committees and hearings",
+      "finance": "Campaign finance",
+      "lockedHint": "Available once the legislator’s office claims this page"
+    },
+    "overview": {
+      "fromLegislator": "From {{title}}",
+      "wordsNote": "Shown as submitted. MAPLE doesn’t edit or fact-check legislator statements.",
+      "topics": "What {{title}} files bills on",
+      "topicsSub_one": "{{count}} bill as lead sponsor this session, by topic.",
+      "topicsSub_other": "{{count}} bills as lead sponsor this session, by topic.",
+      "seeBills": "See {{possessive}} bills →",
+      "activity": "Recent activity",
+      "noActivity": "No recent activity on record."
+    },
+    "activity": {
+      "kind": {
+        "floorVote": "Floor vote",
+        "billAction": "Their bill",
+        "hearing": "Hearing"
+      },
+      "voted": "Voted {{response}}: {{motion}} {{bill}}",
+      "billLink": "Bill page",
+      "hearing_one": "{{committee}} held a hearing on {{count}} bill.",
+      "hearing_other": "{{committee}} held a hearing on {{count}} bills."
+    },
+    "bills": {
+      "source": "Source: malegislature.gov, {{court}} General Court.",
+      "scopeLabel": "Sponsorship",
+      "leadTab": "Lead sponsor ({{count}})",
+      "coTab": "Cosponsor ({{count}})",
+      "byTopic": "By topic",
+      "noTopics": "No topics assigned yet.",
+      "topicsNote": "Topics are assigned automatically by MAPLE. A bill can have more than one.",
+      "billCount_one": "{{count}} bill",
+      "billCount_other": "{{count}} bills",
+      "leadHeading": "Bills filed as lead sponsor",
+      "coHeading": "Bills cosponsored",
+      "none": "No bills this session.",
+      "leadSponsor": "Lead sponsor: {{name}}",
+      "whereItStands": "Where it stands",
+      "latestAction": "Latest action, {{date}}: “{{action}}”",
+      "continuedAs": "Redrafted; continues as {{bill}}",
+      "showing": "Showing {{shown}} of {{total}}, newest filed first",
+      "browse": "Browse all in bill search →",
+      "stageNote": "“Where it stands” is read automatically from the bill’s history on malegislature.gov, and the latest action is quoted as written there. A bill that was redrafted under a new number may look stalled here while its new version moves ahead.",
+      "status": {
+        "sentToStudy": "Sent to study {{bill}}",
+        "adverseReport": "Reported adversely (ought not to pass)",
+        "placedOnFile": "Placed on file",
+        "vetoed": "Vetoed by the Governor",
+        "deadAtDissolution": "No further action taken this session",
+        "inConference": "In a conference committee"
+      }
+    },
+    "stage": {
+      "filed": "Filed",
+      "referred": "Referred to committee",
+      "heard": "Heard in committee",
+      "reported": "Reported by committee",
+      "passedFirst": "Passed the {{first}}",
+      "passedSecond": "Passed the {{second}}",
+      "law": "Signed into law",
+      "aria": "Step {{step}} of {{total}}: {{label}}"
+    },
+    "votes": {
+      "source": "Source: roll call records and committee vote postings on malegislature.gov, read automatically by MAPLE.",
+      "how": {
+        "title": "How to read Massachusetts votes",
+        "few": {
+          "lead": "Recorded votes are a small part of the work.",
+          "body": "Thousands of bills are filed each session, and only a small share get a roll call on the floor."
+        },
+        "lopsided": {
+          "lead": "Many roll calls are lopsided.",
+          "body": "When nearly everyone votes the same way, the vote says little about any one member. Each roll call here shows the full tally, so you can see how close it was."
+        },
+        "committees": {
+          "lead": "Committees decide which bills move.",
+          "body": "Where a joint committee has posted how its members voted, those votes are under Committee votes."
+        }
+      },
+      "viewLabel": "Vote type",
+      "floorTab": "Floor roll calls",
+      "floorTabCount": "Floor roll calls ({{count}})",
+      "committeeTab": "Committee votes",
+      "floor": {
+        "total": "Roll calls this session",
+        "recorded": "Recorded as Yea or Nay",
+        "notVoting": "Not voting or present",
+        "none": "No roll calls to show.",
+        "unavailable": "Roll call records for this legislator aren’t available yet."
+      },
+      "filterLabel": "Filter roll calls",
+      "filterAll": "All roll calls ({{count}})",
+      "filterHers": "On bills they filed",
+      "filterHersCount": "On bills they filed ({{count}})",
+      "herVote": "Vote",
+      "herBill": "Their bill",
+      "rollCall": "Roll call #{{number}}",
+      "kind": {
+        "amendment": "Amendment",
+        "veto": "Veto override",
+        "enactment": "Enactment",
+        "passage": "Passage",
+        "other": "Other motion"
+      },
+      "motionUnknown": "Motion not recorded",
+      "response": {
+        "Yea": "Yea",
+        "Nay": "Nay",
+        "Not Voting": "Not voting",
+        "Present": "Present",
+        "favorable": "Favorable",
+        "adverse": "Adverse",
+        "reserveRight": "Reserved rights",
+        "noVoteRecorded": "No vote recorded"
+      },
+      "tally": "Yea {{yeas}} · Nay {{nays}}",
+      "tallyAria": "Yea {{yeas}}, Nay {{nays}}",
+      "pdf": "Official roll call (PDF)",
+      "showing": "Showing {{shown}} of {{total}}, most recent first",
+      "committee": {
+        "total": "Posted committee votes",
+        "none": "No posted committee votes on bills this legislator filed.",
+        "tally": "Favorable {{favorable}} · Adverse {{adverse}} · Reserved rights {{reserveRight}} · No vote {{noVoteRecorded}}",
+        "note": "Committee votes posted on bills this legislator filed as lead sponsor. A vote is on the committee’s recommendation, not the bill, and members can “reserve their rights” instead of voting for or against."
+      }
+    },
+    "testimony": {
+      "source": "Published on MAPLE, shown exactly as submitted. This section is available because {{title}}’s office has claimed the page.",
+      "byTab": "By {{title}}",
+      "onTab": "On their bills",
+      "byHeading": "Testimony {{title}} published, most recent first",
+      "onHeading": "Most recent testimony on bills they filed",
+      "noneBy": "No published testimony yet.",
+      "noneOn": "No testimony on these bills yet.",
+      "anonymous": "Anonymous",
+      "readFull": "Read full testimony →",
+      "browse": "Browse all in testimony search →"
+    },
+    "committees": {
+      "source": "Source: malegislature.gov. Hearing transcripts are generated automatically by MAPLE from the official video.",
+      "role": {
+        "houseChair": "House Chair",
+        "senateChair": "Senate Chair",
+        "member": "Member"
+      },
+      "next": "Next hearing: {{date}}",
+      "noNext": "No hearing scheduled",
+      "none": "No committee assignments on record."
+    },
+    "hearings": {
+      "upcoming": "Upcoming hearings",
+      "upcomingAside": "Upcoming hearings in {{possessive}} committees",
+      "recent": "Recent hearings",
+      "agenda_one": "{{count}} bill on the agenda",
+      "agenda_other": "{{count}} bills on the agenda",
+      "including": "{{bills}}, including {{possessive}} {{list}}",
+      "agendaLink": "Agenda and testimony →",
+      "videoLink": "Video and transcript →",
+      "noneUpcoming": "No hearings scheduled.",
+      "noneRecent": "No hearings in the last four months.",
+      "attendanceNote": "These are hearings of committees this legislator sits on. The record doesn’t show which members attended."
+    },
+    "finance": {
+      "source": "Source: reports filed with the Office of Campaign and Political Finance (OCPF).",
+      "periodLabel": "Reporting period",
+      "allPeriods": "All reports",
+      "yearSoFar": "{{year}} so far",
+      "keyFigures": "Key figures",
+      "raised": "Raised",
+      "spent": "Spent",
+      "cash": "Cash on hand",
+      "cashAsOf": "Cash on hand, {{date}}",
+      "contributors": "Itemized contributors",
+      "bySource": "Receipts by source",
+      "bySize": "Individual contributions by size",
+      "sources": {
+        "individual": "Individuals (itemized)",
+        "unitemized": "Individuals, $50 or less",
+        "committee": "PACs and political committees",
+        "union": "Unions and associations",
+        "candidateFunds": "Candidate’s own funds",
+        "inKind": "In-kind contributions"
+      },
+      "sizes": {
+        "upTo50": "$50 or less",
+        "51to199": "$51 to $199",
+        "200up": "$200 and up"
+      },
+      "sizeNote": "Grouped by the amount of each contribution as reported.",
+      "noneItemized": "No contributions reported for this period.",
+      "limitsNote": "Massachusetts limits an individual’s contributions to a candidate to $1,000 per calendar year. Contributions of $50 or less don’t have to be itemized, so they are reported as a lump sum.",
+      "fullReports": "Full reports on ocpf.us (filer ID {{id}})"
+    },
+    "sources": {
+      "link": "Where this information comes from",
+      "recordTitle": "Public record",
+      "record": "Bills, votes, committees, hearings and campaign finance come from state sources and are compiled automatically. Each section names its source. MAPLE doesn’t review each record by hand, so the official source is the authority if the two differ.",
+      "usersTitle": "MAPLE users",
+      "users": "Testimony from residents and organizations, shown exactly as submitted.",
+      "legislatorTitle": "The legislator",
+      "legislator": "{{title}}’s statement and testimony, shown as submitted. The office claimed this page through the official legislature email address."
+    }
+  }
 }
