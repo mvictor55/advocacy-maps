@@ -1,15 +1,36 @@
 {
-  "title": "Media, Articles & Insights",
+  "title": "In the News",
   "breadcrumb": "In the News",
-  "subhead": "Press coverage, awards, and books featuring MAPLE and its community.",
-  "readMoreButton": "Read more",
-  "media": {
-    "title": "Media"
+  "subhead": "Press coverage, research, and conversations about MAPLE and the people building it.",
+  "pieceCount_one": "{{count}} piece since {{since}}",
+  "pieceCount_other": "{{count}} pieces since {{since}}",
+  "pressInquiries": "Press inquiries:",
+  "featuredIn": "Featured in",
+  "excerpts": "Selected excerpts",
+  "fullList": "Full list",
+  "loading": "Loading…",
+  "empty": "Nothing to show yet.",
+  "opensInNewTab": "(opens in a new tab)",
+  "filter": {
+    "label": "Filter by format",
+    "all": "All"
   },
-  "awards": {
-    "title": "Awards"
+  "formats": {
+    "news": "News",
+    "opinion": "Opinion",
+    "research": "Research",
+    "interview": "Podcasts & interviews"
   },
-  "books": {
-    "title": "Books"
+  "readCta": {
+    "news": "Read the article",
+    "opinion": "Read the piece",
+    "research": "Read the research",
+    "interview": "Read the interview",
+    "default": "Read more"
+  },
+  "press": {
+    "title": "Writing about MAPLE?",
+    "body": "MAPLE is a free public platform for submitting and reading testimony on Massachusetts legislation. We’re glad to help with interviews, data, and background.",
+    "cta": "Email {{email}}"
   }
 }
